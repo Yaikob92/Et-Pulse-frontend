@@ -10,7 +10,10 @@ export const useLogin = () => {
   const [emailAddress, setEmailAddress] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingProvider, setLoadingProvider] = useState<
+    "google" | "apple" | null
+  >(null);
+
   const { startSSOFlow } = useSSO();
 
   // Handle the submission of the sign-in form
@@ -42,11 +45,12 @@ export const useLogin = () => {
   };
 
   const handleSocialAuth = async (strategy: "oauth_google" | "oauth_apple") => {
-    setIsLoading(true);
+    setLoadingProvider(strategy === "oauth_google" ? "google" : "apple");
     try {
       const { createdSessionId, setActive } = await startSSOFlow({ strategy });
       if (createdSessionId && setActive) {
         await setActive({ session: createdSessionId });
+        router.replace("/(tabs)");
       }
     } catch (error) {
       console.log("Error in social auth", error);
@@ -56,7 +60,7 @@ export const useLogin = () => {
         `Failed to sign in with ${provider}. Please try again.`
       );
     } finally {
-      setIsLoading(false);
+      setLoadingProvider(null);
     }
   };
   return {
@@ -66,6 +70,6 @@ export const useLogin = () => {
     setPassword,
     onSignInPress,
     handleSocialAuth,
-    isLoading,
+    loadingProvider,
   };
 };
