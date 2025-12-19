@@ -9,7 +9,7 @@ export default function Profile() {
       onPress={handleSignOut}
       style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
     >
-      <Text>profile</Text>
+      <Text className="text-red-500">profile</Text>
     </TouchableOpacity>
   );
 }
