@@ -1,109 +1,96 @@
-// import { View, Text, Image, TouchableOpacity } from "react-native";
-// import { Ionicons } from "@expo/vector-icons";
+import { View, Text, Image, TouchableOpacity } from "react-native";
+import { Feather, Ionicons } from "@expo/vector-icons";
+import { formatDate, formatNumber } from "@/utils/formatter";
+import { NewsItem } from "@/types";
 
-// interface NewsItem {
-//   _id: string;
-//   channelProfilePic: string;
-//   channelUsername: string;
-//   publishedAt: string;
-//   content?: string;
-//   mediaUrl?: string;
-// }
+type Props = {
+  item: NewsItem;
+};
 
-// type Props = {
-//   item: NewsItem;
-//   isExpanded: boolean;
-//   isLiked: boolean;
-//   isBookmarked: boolean;
-//   onToggleExpanded: () => void;
-//   onToggleLike: () => void;
-//   onToggleBookmark: () => void;
-// };
+export const NewsItemCard = ({ item }: Props) => {
+  return (
+    <View className="bg-white border-b border-gray-400 pb-4 mb-3">
+      {/* Header */}
+      <View className="flex-row items-center justify-between px-4 pt-4 mb-3">
+        <View className="flex-row items-center flex-1">
+          <Image
+            source={{ uri: item.channelProfilePic }}
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 22,
+              borderWidth: 2,
+              borderColor: "#F3F4F6",
+            }}
+          />
+          <View className="ml-3 flex-1">
+            <Text className="text-base font-bold text-gray-900">
+              {item.channelUsername.toUpperCase() ?? ""}
+            </Text>
+            <Text className="text-[13px] text-gray-500">
+              {formatDate(item.publishedAt)}
+            </Text>
+          </View>
+          <TouchableOpacity className="flex-row items-center">
+            <Ionicons name="add-outline" size={25} color="#2467f9ff" />
+            <Text className="text-blue-600 text-lg">Follow</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
 
-// export const NewsItemCard = ({
-//   item,
-//   isExpanded,
-//   isLiked,
-//   isBookmarked,
-//   onToggleExpanded,
-//   onToggleLike,
-//   onToggleBookmark,
-// }: Props) => {
-//   return (
-//     <View className="bg-white border-b border-gray-200 pb-4 mb-2">
-//       {/* Header */}
-//       <View className="flex-row items-center justify-between px-4 pt-4 mb-3">
-//         <View className="flex-row items-center flex-1">
-//           <Image
-//             source={{ uri: item.channelProfilePic }}
-//             style={{
-//               width: 44,
-//               height: 44,
-//               borderRadius: 22,
-//               borderWidth: 2,
-//               borderColor: "#F3F4F6",
-//             }}
-//           />
-//           <View className="ml-3 flex-1">
-//             <Text className="text-base font-bold text-gray-900">
-//               {item.channelUsername}
-//             </Text>
-//             <Text className="text-[13px] text-gray-500">
-//               {new Date(item.publishedAt).toLocaleDateString()}
-//             </Text>
-//           </View>
-//         </View>
-//       </View>
+      {/* Content */}
+      {item.content && (
+        <View className="px-4 mb-3">
+          <Text className="text-blue-600 mt-1">{item.content}</Text>
+        </View>
+      )}
 
-//       {/* Content */}
-//       {item.content && (
-//         <View className="px-4 mb-3">
-//           <Text numberOfLines={isExpanded ? undefined : 3}>{item.content}</Text>
+      {/* Media */}
+      {item.mediaUrl && (
+        <Image
+          source={{ uri: item.mediaUrl }}
+          style={{ width: "100%", height: 256 }}
+        />
+      )}
 
-//           {item.content.length > 100 && (
-//             <TouchableOpacity onPress={onToggleExpanded}>
-//               <Text className="text-blue-600 mt-1">
-//                 {isExpanded ? "Show less" : "Read more"}
-//               </Text>
-//             </TouchableOpacity>
-//           )}
-//         </View>
-//       )}
+      {/* Actions */}
+      <View className="flex-row items-center justify-around mt-4">
+        <TouchableOpacity className="flex-col items-center">
+          <View className="flex-row items-center">
+            <Feather name="thumbs-up" size={18} color="#657786" />
+            <Text className="text-gray-500 ml-2">
+              {formatNumber(item.likesCount || 0)}
+            </Text>
+          </View>
+          <Text className="text-sm text-gray-600 mt-1">Like</Text>
+        </TouchableOpacity>
+        <TouchableOpacity className="flex-col items-center" onPress={() => {}}>
+          <View className="flex-row items-center">
+            <Ionicons
+              name="chatbox-ellipses-outline"
+              size={18}
+              color="#657786"
+            />
+            <Text className="text-gray-500 text-sm ml-2">
+              {formatNumber(item.comments?.length || 0)}
+            </Text>
+          </View>
+          <Text className="text-sm text-gray-600 mt-1">Comment</Text>
+        </TouchableOpacity>
 
-//       {/* Media */}
-//       {item.mediaUrl && (
-//         <Image
-//           source={{ uri: item.mediaUrl }}
-//           style={{ width: "100%", height: 256 }}
-//         />
-//       )}
+        <TouchableOpacity className="flex-col items-center">
+          <View className="flex-row items-center">
+            <Feather name="repeat" size={18} color="#657786" />
+            <Text className="text-gray-500 text-sm ml-2">0</Text>
+          </View>
+          <Text className="text-sm text-gray-600 mt-1">Repost</Text>
+        </TouchableOpacity>
 
-//       {/* Actions */}
-//       <View className="flex-row justify-between px-6 pt-2">
-//         <TouchableOpacity onPress={onToggleLike}>
-//           <Ionicons
-//             name={isLiked ? "heart" : "heart-outline"}
-//             size={24}
-//             color={isLiked ? "red" : "gray"}
-//           />
-//         </TouchableOpacity>
-
-//         <TouchableOpacity>
-//           <Ionicons name="chatbubble-outline" size={24} color="gray" />
-//         </TouchableOpacity>
-
-//         <TouchableOpacity>
-//           <Ionicons name="share-social-outline" size={24} color="gray" />
-//         </TouchableOpacity>
-
-//         <TouchableOpacity onPress={onToggleBookmark}>
-//           <Ionicons
-//             name={isBookmarked ? "bookmark" : "bookmark-outline"}
-//             size={24}
-//             color={isBookmarked ? "blue" : "gray"}
-//           />
-//         </TouchableOpacity>
-//       </View>
-//     </View>
-//   );
-// };
+        <TouchableOpacity className="flex-col items-center">
+          <Feather name="send" size={18} color="#657786" />
+          <Text className="text-sm text-gray-600 mt-1">Share</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
