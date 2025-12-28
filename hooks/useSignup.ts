@@ -69,6 +69,8 @@ export const useSignup = () => {
     setEmailAddress,
     password,
     setPassword,
+    pendingVerification,
+    setPendingVerification,
     onSignUpPress,
     onVerifyPress,
   };

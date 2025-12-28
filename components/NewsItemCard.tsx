@@ -1,13 +1,21 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { formatDate, formatNumber } from "@/utils/formatter";
-import { NewsItem } from "@/types";
+import { NewsItem, User } from "@/types";
 
-type Props = {
+type NewsCardProps = {
   item: NewsItem;
+  onLike: (newsId: string) => void;
+  isLiked?: boolean;
+  currentUser: User;
 };
 
-export const NewsItemCard = ({ item }: Props) => {
+export const NewsItemCard = ({
+  item,
+  onLike,
+  isLiked,
+  currentUser,
+}: NewsCardProps) => {
   return (
     <View className="bg-white border-b border-gray-400 pb-4 mb-3">
       {/* Header */}
@@ -31,7 +39,10 @@ export const NewsItemCard = ({ item }: Props) => {
               {formatDate(item.publishedAt)}
             </Text>
           </View>
-          <TouchableOpacity className="flex-row items-center">
+          <TouchableOpacity>
+            <Ionicons name="bookmark-outline" size={20} />
+          </TouchableOpacity>
+          <TouchableOpacity className="flex-row items-center ml-5">
             <Ionicons name="add-outline" size={25} color="#2467f9ff" />
             <Text className="text-blue-600 text-lg">Follow</Text>
           </TouchableOpacity>
@@ -55,14 +66,29 @@ export const NewsItemCard = ({ item }: Props) => {
 
       {/* Actions */}
       <View className="flex-row items-center justify-around mt-4">
-        <TouchableOpacity className="flex-col items-center">
+        <TouchableOpacity
+          className="flex-col items-center"
+          onPress={() => onLike(item._id)}
+        >
           <View className="flex-row items-center">
-            <Feather name="thumbs-up" size={18} color="#657786" />
-            <Text className="text-gray-500 ml-2">
-              {formatNumber(item.likesCount || 0)}
+            <FontAwesome
+              name={isLiked ? "thumbs-up" : "thumbs-o-up"}
+              size={18}
+              color={isLiked ? "#000" : "#657786"}
+            />
+            <Text
+              className={`text-sm ml-2 ${
+                isLiked ? "text-black-900" : "text-gray-500"
+              }`}
+            >
+              {formatNumber(item.likes?.length || 0)}
             </Text>
           </View>
-          <Text className="text-sm text-gray-600 mt-1">Like</Text>
+          {isLiked ? (
+            <Text className="text-sm text-gray-600 mt-1">Liked</Text>
+          ) : (
+            <Text className="text-sm text-gray-600 mt-1">Like</Text>
+          )}
         </TouchableOpacity>
         <TouchableOpacity className="flex-col items-center" onPress={() => {}}>
           <View className="flex-row items-center">

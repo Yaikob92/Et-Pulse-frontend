@@ -1,10 +1,33 @@
+import { useCurrentUser } from "@/hooks/useCurrrentUser";
 import { useFetchNews } from "@/hooks/useNews";
 import { NewsItem } from "@/types";
-import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
+import { useCallback } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  ListRenderItem,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { NewsItemCard } from "./NewsItemCard";
 
 const NewsList = () => {
-  const { news, isLoading, isError, data, error, refetch } = useFetchNews();
+  const { currentUser } = useCurrentUser();
+  const { news, isLoading, isError, refetch, toggleLike, checkIsLiked } =
+    useFetchNews();
+
+  const renderItem = useCallback<ListRenderItem<NewsItem>>(
+    ({ item }) => (
+      <NewsItemCard
+        item={item}
+        onLike={toggleLike}
+        currentUser={currentUser}
+        isLiked={checkIsLiked(item.likes, currentUser)}
+      />
+    ),
+    [toggleLike, currentUser, checkIsLiked]
+  );
 
   if (isLoading) {
     return (
@@ -15,7 +38,7 @@ const NewsList = () => {
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <View className="p-8 items-center">
         <Text className="text-gray-500 mb-4">Failed to load posts</Text>
@@ -29,19 +52,36 @@ const NewsList = () => {
     );
   }
 
-  if (news.lenght === 0) {
+  if (news.length === 0) {
     return (
       <View className="p-8 items-center">
         <Text className="text-gray-500">No posts yet</Text>
       </View>
     );
   }
-
   return (
-    <>
-      {news?.map((item: NewsItem) => (
-        <NewsItemCard key={item._id} item={item} />
-      ))}
-    </>
+    <FlatList
+      data={news}
+      renderItem={renderItem}
+      keyExtractor={(item) => item._id}
+      showsVerticalScrollIndicator={false}
+      contentContainerClassName="pb-24"
+    // onRefresh={() => fetchNews(1, true)}
+    // refreshing={refreshing}
+    // onEndReached={() => {
+    //   if (hasMore && !loading) {
+    //     fetchNews(page + 1);
+    //   }
+    // }}
+    // onEndReachedThreshold={0.5}
+    // ListFooterComponent={
+    //   loading && !refreshing ? (
+    //     <View className="py-4">
+    //       <ActivityIndicator size="small" color="#3B82F6" />
+    //     </View>
+    //   ) : null
+    // }
+    />
   );
 };
+export default NewsList;

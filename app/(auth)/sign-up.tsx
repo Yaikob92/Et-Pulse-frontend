@@ -4,7 +4,6 @@ import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useSignup } from "../../hooks/useSignup";
 
 export default function SignUpScreen() {
-  const [pendingVerification, setPendingVerification] = React.useState(false);
   const {
     emailAddress,
     setEmailAddress,
@@ -12,6 +11,7 @@ export default function SignUpScreen() {
     setPassword,
     code,
     setCode,
+    pendingVerification,
     onSignUpPress,
     onVerifyPress,
   } = useSignup();

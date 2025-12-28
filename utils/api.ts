@@ -1,7 +1,7 @@
 import { useAuth } from "@clerk/clerk-expo";
 import axios, { AxiosInstance } from "axios";
 
-const API_BASE_URL = "https://et-pulse-backend.vercel.app//api";
+const API_BASE_URL = "https://et-pulse-backend.vercel.app/api";
 
 // this will basically create an authenticated api, pass the token into our headers
 export const createApiClient = (
@@ -39,10 +39,10 @@ export const newsApi = {
   getChannelsPost: (api: AxiosInstance, username: string) =>
     api.get(`/news/channel/${username}`),
   likeNews: (api: AxiosInstance, newsId: string) =>
-    api.get(`/news/${newsId}/like`),
+    api.post(`/news/${newsId}/like`),
 };
 
 export const commentApi = {
   createComment: (api: AxiosInstance, newsId: string, content: string) =>
-    api.post(`/comment/news/${newsId}"`, { content }),
+    api.post(`/comment/news/${newsId}`, { content }),
 };

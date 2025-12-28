@@ -13,6 +13,7 @@ export interface NewsItem {
   publishedAt: string;
   content?: string;
   mediaUrl?: string;
+  likes: string[];
   comments?: string;
   likesCount: number;
   commentsCount: number;
