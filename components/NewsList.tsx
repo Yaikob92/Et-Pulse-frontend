@@ -1,7 +1,7 @@
-import { useCurrentUser } from "@/hooks/useCurrrentUser";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useFetchNews } from "@/hooks/useNews";
 import { NewsItem } from "@/types";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -11,18 +11,25 @@ import {
   View,
 } from "react-native";
 import { NewsItemCard } from "./NewsItemCard";
-
+import CommentsModal from "@/components/CommentsModal";
 const NewsList = () => {
   const { currentUser } = useCurrentUser();
   const { news, isLoading, isError, refetch, toggleLike, checkIsLiked } =
     useFetchNews();
 
-  const renderItem = useCallback<ListRenderItem<NewsItem>>(
+  const [selectedNewsId, setSelectedNewsId] = useState<string | null>(null);
+
+  const selectedNews = selectedNewsId
+    ? news.find((n: NewsItem) => n._id === selectedNewsId)
+    : null;
+
+  const renderNews = useCallback<ListRenderItem<NewsItem>>(
     ({ item }) => (
       <NewsItemCard
         item={item}
         onLike={toggleLike}
         currentUser={currentUser}
+        onComment={() => setSelectedNewsId(item._id)}
         isLiked={checkIsLiked(item.likes, currentUser)}
       />
     ),
@@ -60,28 +67,34 @@ const NewsList = () => {
     );
   }
   return (
-    <FlatList
-      data={news}
-      renderItem={renderItem}
-      keyExtractor={(item) => item._id}
-      showsVerticalScrollIndicator={false}
-      contentContainerClassName="pb-24"
-    // onRefresh={() => fetchNews(1, true)}
-    // refreshing={refreshing}
-    // onEndReached={() => {
-    //   if (hasMore && !loading) {
-    //     fetchNews(page + 1);
-    //   }
-    // }}
-    // onEndReachedThreshold={0.5}
-    // ListFooterComponent={
-    //   loading && !refreshing ? (
-    //     <View className="py-4">
-    //       <ActivityIndicator size="small" color="#3B82F6" />
-    //     </View>
-    //   ) : null
-    // }
-    />
+    <>
+      <FlatList
+        data={news}
+        renderItem={renderNews}
+        keyExtractor={(item) => item._id}
+        showsVerticalScrollIndicator={false}
+        contentContainerClassName="pb-24"
+        // onRefresh={() => fetchNews(1, true)}
+        // refreshing={refreshing}
+        // onEndReached={() => {
+        //   if (hasMore && !loading) {
+        //     fetchNews(page + 1);
+        //   }
+        // }}
+        // onEndReachedThreshold={0.5}
+        // ListFooterComponent={
+        //   loading && !refreshing ? (
+        //     <View className="py-4">
+        //       <ActivityIndicator size="small" color="#3B82F6" />
+        //     </View>
+        //   ) : null
+        // }
+      />
+      <CommentsModal
+        selectedNews={selectedNews}
+        onClose={() => setSelectedNewsId(null)}
+      />
+    </>
   );
 };
 export default NewsList;

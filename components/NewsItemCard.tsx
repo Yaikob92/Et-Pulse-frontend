@@ -7,6 +7,7 @@ type NewsCardProps = {
   item: NewsItem;
   onLike: (newsId: string) => void;
   isLiked?: boolean;
+  onComment: (news: NewsItem) => void;
   currentUser: User;
 };
 
@@ -14,7 +15,7 @@ export const NewsItemCard = ({
   item,
   onLike,
   isLiked,
-  currentUser,
+  onComment,
 }: NewsCardProps) => {
   return (
     <View className="bg-white border-b border-gray-400 pb-4 mb-3">
@@ -36,7 +37,7 @@ export const NewsItemCard = ({
               {item.channelUsername.toUpperCase() ?? ""}
             </Text>
             <Text className="text-[13px] text-gray-500">
-              {formatDate(item.publishedAt)}
+              {formatDate(item.createdAt)}
             </Text>
           </View>
           <TouchableOpacity>
@@ -77,9 +78,8 @@ export const NewsItemCard = ({
               color={isLiked ? "#000" : "#657786"}
             />
             <Text
-              className={`text-sm ml-2 ${
-                isLiked ? "text-black-900" : "text-gray-500"
-              }`}
+              className={`text-sm ml-2 ${isLiked ? "text-black-900" : "text-gray-500"
+                }`}
             >
               {formatNumber(item.likes?.length || 0)}
             </Text>
@@ -90,7 +90,10 @@ export const NewsItemCard = ({
             <Text className="text-sm text-gray-600 mt-1">Like</Text>
           )}
         </TouchableOpacity>
-        <TouchableOpacity className="flex-col items-center" onPress={() => {}}>
+        <TouchableOpacity
+          className="flex-col items-center"
+          onPress={() => onComment(item)}
+        >
           <View className="flex-row items-center">
             <Ionicons
               name="chatbox-ellipses-outline"

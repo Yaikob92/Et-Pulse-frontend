@@ -10,11 +10,23 @@ export interface NewsItem {
   _id: string;
   channelProfilePic: string;
   channelUsername: string;
-  publishedAt: string;
+  createdAt: string;
   content?: string;
   mediaUrl?: string;
   likes: string[];
-  comments?: string;
+  comments?: CommentType[];
   likesCount: number;
   commentsCount: number;
+}
+
+export interface CommentType {
+  _id: string;
+  userId: User;
+  newsId: NewsItem;
+  username: string;
+  profilePicture: string;
+  content: string;
+  likes: string;
+  likesCount: number;
+  createdAt: string;
 }
