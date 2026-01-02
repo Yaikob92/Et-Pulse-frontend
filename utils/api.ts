@@ -15,7 +15,7 @@ export const createApiClient = (
       config.headers.Authorization = `Bearer ${token}`;
     }
     // Add User-Agent to avoid being blocked by Arcjet bot protection
-    config.headers["User-Agent"] = "X-Clone-Mobile/1.0.0 (Android; iOS)";
+    config.headers["User-Agent"] = "Et-Pulse-Mobile/1.0.0 (Android; iOS)";
     return config;
   });
 

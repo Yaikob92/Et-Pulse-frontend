@@ -25,15 +25,3 @@ export default function HomeScreen() {
     </View>
   );
 }
-
-//  const toggleExpanded = (id: string) => {
-//     setExpandedItems((prev) => {
-//       const newSet = new Set(prev);
-//       if (newSet.has(id)) {
-//         newSet.delete(id);
-//       } else {
-//         newSet.add(id);
-//       }
-//       return newSet;
-//     });
-//   };

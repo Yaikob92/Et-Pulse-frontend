@@ -74,21 +74,6 @@ const NewsList = () => {
         keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
         contentContainerClassName="pb-24"
-        // onRefresh={() => fetchNews(1, true)}
-        // refreshing={refreshing}
-        // onEndReached={() => {
-        //   if (hasMore && !loading) {
-        //     fetchNews(page + 1);
-        //   }
-        // }}
-        // onEndReachedThreshold={0.5}
-        // ListFooterComponent={
-        //   loading && !refreshing ? (
-        //     <View className="py-4">
-        //       <ActivityIndicator size="small" color="#3B82F6" />
-        //     </View>
-        //   ) : null
-        // }
       />
       <CommentsModal
         selectedNews={selectedNews}
