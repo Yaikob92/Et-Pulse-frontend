@@ -12,10 +12,13 @@ import {
 } from "react-native";
 import { NewsItemCard } from "./NewsItemCard";
 import CommentsModal from "@/components/CommentsModal";
+import { useBookmarks } from "@/hooks/useBookmarks";
+
 const NewsList = () => {
   const { currentUser } = useCurrentUser();
   const { news, isLoading, isError, refetch, toggleLike, checkIsLiked } =
     useFetchNews();
+  const { saveBookMark, checkIsBookmarked } = useBookmarks();
 
   const [selectedNewsId, setSelectedNewsId] = useState<string | null>(null);
 
@@ -30,10 +33,12 @@ const NewsList = () => {
         onLike={toggleLike}
         currentUser={currentUser}
         onComment={() => setSelectedNewsId(item._id)}
+        isBookmarked={checkIsBookmarked(item._id)}
+        onBookmark={saveBookMark}
         isLiked={checkIsLiked(item.likes, currentUser)}
       />
     ),
-    [toggleLike, currentUser, checkIsLiked]
+    [toggleLike, currentUser, checkIsLiked, saveBookMark, checkIsBookmarked]
   );
 
   if (isLoading) {

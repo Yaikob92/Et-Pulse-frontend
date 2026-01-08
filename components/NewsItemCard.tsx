@@ -9,6 +9,8 @@ type NewsCardProps = {
   isLiked?: boolean;
   onComment: (news: NewsItem) => void;
   currentUser: User;
+  onBookmark: (newsId: string) => void;
+  isBookmarked: boolean;
 };
 
 export const NewsItemCard = ({
@@ -16,6 +18,8 @@ export const NewsItemCard = ({
   onLike,
   isLiked,
   onComment,
+  onBookmark,
+  isBookmarked,
 }: NewsCardProps) => {
   return (
     <View className="bg-white border-b border-gray-400 pb-4 mb-3">
@@ -40,8 +44,12 @@ export const NewsItemCard = ({
               {formatDate(item.createdAt)}
             </Text>
           </View>
-          <TouchableOpacity>
-            <Ionicons name="bookmark-outline" size={20} />
+          <TouchableOpacity onPress={() => onBookmark(item._id)}>
+            <Ionicons
+              name={isBookmarked ? "bookmark" : "bookmark-outline"}
+              size={20}
+              color={isBookmarked ? "#2467f9" : "#6b7280"}
+            />
           </TouchableOpacity>
           <TouchableOpacity className="flex-row items-center ml-5">
             <Ionicons name="add-outline" size={25} color="#2467f9ff" />
@@ -78,8 +86,9 @@ export const NewsItemCard = ({
               color={isLiked ? "#000" : "#657786"}
             />
             <Text
-              className={`text-sm ml-2 ${isLiked ? "text-black-900" : "text-gray-500"
-                }`}
+              className={`text-sm ml-2 ${
+                isLiked ? "text-black-900" : "text-gray-500"
+              }`}
             >
               {formatNumber(item.likes?.length || 0)}
             </Text>

@@ -15,7 +15,7 @@ export const useUserSync = () => {
     onError: (error: any) => {
       console.error("User sync failed:");
       if (error) {
-        console.error("Error response data:", error.response.data);
+        console.error("Error response data:", error.response?.data || error.message);
       }
     },
   });
@@ -23,10 +23,10 @@ export const useUserSync = () => {
   // auto-sync user when signed in
   useEffect(() => {
     // if user is signed in and user is not synced yet, sync user
-    if (isSignedIn && !syncUserMutation.data) {
+    if (isSignedIn && !syncUserMutation.isSuccess && !syncUserMutation.isPending) {
       syncUserMutation.mutate();
     }
-  }, [isSignedIn]);
+  }, [isSignedIn, syncUserMutation.isSuccess, syncUserMutation.isPending]);
 
   return null;
 };

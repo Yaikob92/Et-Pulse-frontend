@@ -1,5 +1,5 @@
 import { useAuth } from "@clerk/clerk-expo";
-import axios, { AxiosInstance } from "axios";
+import axios, { Axios, AxiosInstance } from "axios";
 
 const API_BASE_URL = "https://et-pulse-backend.vercel.app/api";
 
@@ -45,4 +45,10 @@ export const newsApi = {
 export const commentApi = {
   createComment: (api: AxiosInstance, newsId: string, content: string) =>
     api.post(`/comment/news/${newsId}`, { content }),
+};
+
+export const bookmarkApi = {
+  getBookMark: (api: AxiosInstance) => api.get("/news/bookmark"),
+  saveNews: (api: AxiosInstance, newsId: string) =>
+    api.post(`/news/bookmark/${newsId}`),
 };
