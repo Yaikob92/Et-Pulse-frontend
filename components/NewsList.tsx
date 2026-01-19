@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   FlatList,
   ListRenderItem,
+  RefreshControl,
   Text,
   TouchableOpacity,
   View,
@@ -19,7 +20,7 @@ const NewsList = () => {
   const { news, isLoading, isError, refetch, toggleLike, checkIsLiked } =
     useFetchNews();
   const { saveBookMark, checkIsBookmarked } = useBookmarks();
-
+  const [refreshing, setRefreshing] = useState(false);
   const [selectedNewsId, setSelectedNewsId] = useState<string | null>(null);
 
   const selectedNews = selectedNewsId
@@ -38,9 +39,14 @@ const NewsList = () => {
         isLiked={checkIsLiked(item.likes, currentUser)}
       />
     ),
-    [toggleLike, currentUser, checkIsLiked, saveBookMark, checkIsBookmarked]
+    [toggleLike, currentUser, checkIsLiked, saveBookMark, checkIsBookmarked],
   );
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
   if (isLoading) {
     return (
       <View className="p-8 items-center">
@@ -78,7 +84,15 @@ const NewsList = () => {
         renderItem={renderNews}
         keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
-        contentContainerClassName="pb-24"
+        contentContainerStyle={{ paddingBottom: 80 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#1DA1F2"
+            colors={["#1DA1F2"]}
+          />
+        }
       />
       <CommentsModal
         selectedNews={selectedNews}

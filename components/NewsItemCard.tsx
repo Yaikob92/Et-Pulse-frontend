@@ -86,9 +86,7 @@ export const NewsItemCard = ({
               color={isLiked ? "#000" : "#657786"}
             />
             <Text
-              className={`text-sm ml-2 ${
-                isLiked ? "text-black-900" : "text-gray-500"
-              }`}
+              className={`text-sm ml-2 ${isLiked ? "text-black-900" : "text-gray-500"}`}
             >
               {formatNumber(item.likes?.length || 0)}
             </Text>

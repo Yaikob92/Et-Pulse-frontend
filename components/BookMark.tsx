@@ -5,20 +5,28 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   FlatList,
+  RefreshControl,
 } from "react-native";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { NewsItem } from "@/types";
 
 import { useBookmarks } from "@/hooks/useBookmarks";
 import { BookMarkCards } from "./BookMarkCards";
 
 const BookMark = () => {
+  const [refreshing, setRefreshing] = useState(false);
   const { news, isLoading, isError, refetch } = useBookmarks();
 
   const renderBookMarks = useCallback<ListRenderItem<NewsItem>>(
     ({ item }) => <BookMarkCards item={item} />,
-    []
+    [],
   );
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
 
   if (isLoading) {
     return (
@@ -52,15 +60,23 @@ const BookMark = () => {
   }
 
   return (
-    <>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       <FlatList
         data={news}
         renderItem={renderBookMarks}
         keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
-        contentContainerClassName="pb-24"
+        contentContainerStyle={{ paddingBottom: 80 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#1DA1F2"
+            colors={["#1DA1F2"]}
+          />
+        }
       />
-    </>
+    </View>
   );
 };
 
