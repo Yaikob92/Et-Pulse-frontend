@@ -1,15 +1,11 @@
-import { useSignOut } from "@/hooks/useSignOut";
 import React from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { View } from "react-native";
+import Profile from "@/components/Profile";
 
-export default function Profile() {
-  const { handleSignOut } = useSignOut();
+export default function ProfileScreen() {
   return (
-    <TouchableOpacity
-      onPress={handleSignOut}
-      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-    >
-      <Text className="text-red-500">profile</Text>
-    </TouchableOpacity>
+    <View className="flex-1 bg-white">
+      <Profile />
+    </View>
   );
 }

@@ -32,6 +32,20 @@ export const userApi = {
   getCurrentUser: (api: AxiosInstance) => api.get("/user/me"),
   updateProfile: (api: AxiosInstance, data: any) =>
     api.put("/user/profile", data),
+  uploadProfilePicture: (api: AxiosInstance, imageUri: string) => {
+    const formData = new FormData();
+    formData.append("image", {
+      uri: imageUri,
+      name: "profile.jpg",
+      type: "image/jpeg",
+    } as any);
+
+    return api.post("/user/profile/picture", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
 };
 
 export const newsApi = {
