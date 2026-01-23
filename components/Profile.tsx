@@ -48,13 +48,13 @@ export default function Profile() {
       {/* Header */}
       <View>
         <View className="flex-row items-center justify-between">
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={24} color="#000" />
           </TouchableOpacity>
 
           <Text className="text-lg font-semibold">Account</Text>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/notifications")}>
             <Ionicons name="notifications-outline" size={24} color="#000" />
           </TouchableOpacity>
         </View>

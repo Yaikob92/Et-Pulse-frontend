@@ -15,7 +15,11 @@ import { NewsItemCard } from "./NewsItemCard";
 import CommentsModal from "@/components/CommentsModal";
 import { useBookmarks } from "@/hooks/useBookmarks";
 
-const NewsList = () => {
+interface NewsListProps {
+  category?: string;
+}
+
+const NewsList = ({ category }: NewsListProps) => {
   const { currentUser } = useCurrentUser();
   const { news, isLoading, isError, refetch, toggleLike, checkIsLiked } =
     useFetchNews();

@@ -13,9 +13,7 @@ export default function RootLayout() {
     <ClerkProvider tokenCache={tokenCache}>
       <QueryClientProvider client={queryclient}>
         <SafeAreaProvider>
-          {/* Status Bar */}
           <ExpoStatusBar style="dark" />
-          {/* Full-screen container */}
           <SafeAreaView style={{ flex: 1 }} edges={["top", "bottom"]}>
             <InitialLayout />
           </SafeAreaView>
