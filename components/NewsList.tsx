@@ -21,7 +21,7 @@ interface NewsListProps {
 
 const NewsList = ({ category }: NewsListProps) => {
   const { currentUser } = useCurrentUser();
-  const { news, isLoading, isError, refetch, toggleLike, checkIsLiked } =
+  const { news, isLoading, isError, refetch, toggleLike } =
     useFetchNews();
   const { saveBookMark, checkIsBookmarked } = useBookmarks();
   const [refreshing, setRefreshing] = useState(false);
@@ -31,19 +31,27 @@ const NewsList = ({ category }: NewsListProps) => {
     ? news.find((n: NewsItem) => n._id === selectedNewsId)
     : null;
 
+  const handleToggleLike = (newsId: string) => {
+    if (!currentUser) {
+      alert("Please log in to like posts.");
+      return;
+    }
+    toggleLike(newsId);
+  };
+
   const renderNews = useCallback<ListRenderItem<NewsItem>>(
     ({ item }) => (
       <NewsItemCard
         item={item}
-        onLike={toggleLike}
+        onLike={handleToggleLike}
         currentUser={currentUser}
         onComment={() => setSelectedNewsId(item._id)}
         isBookmarked={checkIsBookmarked(item._id)}
         onBookmark={saveBookMark}
-        isLiked={checkIsLiked(item.likes, currentUser)}
+        isLiked={item.isLiked}
       />
     ),
-    [toggleLike, currentUser, checkIsLiked, saveBookMark, checkIsBookmarked],
+    [handleToggleLike, currentUser, saveBookMark, checkIsBookmarked],
   );
 
   const onRefresh = async () => {
@@ -87,6 +95,7 @@ const NewsList = ({ category }: NewsListProps) => {
         data={news}
         renderItem={renderNews}
         keyExtractor={(item) => item._id}
+        extraData={news}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 80 }}
         refreshControl={

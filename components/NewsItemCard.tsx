@@ -18,6 +18,7 @@ export const NewsItemCard = ({
   onLike,
   isLiked,
   onComment,
+  currentUser,
   onBookmark,
   isBookmarked,
 }: NewsCardProps) => {
@@ -77,24 +78,27 @@ export const NewsItemCard = ({
       <View className="flex-row items-center justify-around mt-4">
         <TouchableOpacity
           className="flex-col items-center"
-          onPress={() => onLike(item._id)}
+          onPress={() => {
+            onLike(item._id);
+          }}
+          disabled={!currentUser}
         >
           <View className="flex-row items-center">
             <FontAwesome
-              name={isLiked ? "thumbs-up" : "thumbs-o-up"}
+              name={item.isLiked ? "thumbs-up" : "thumbs-o-up"}
               size={18}
-              color={isLiked ? "#000" : "#657786"}
+              color={item.isLiked ? "#000" : "#657786"}
             />
             <Text
-              className={`text-sm ml-2 ${isLiked ? "text-black-900" : "text-gray-500"}`}
+              className={`text-sm ml-2 ${item.isLiked ? "text-black-900" : "text-gray-600"}`}
             >
-              {formatNumber(item.likes?.length || 0)}
+              {formatNumber(item.likesCount || 0)}
             </Text>
           </View>
-          {isLiked ? (
+          {item.isLiked ? (
             <Text className="text-sm text-gray-600 mt-1">Liked</Text>
           ) : (
-            <Text className="text-sm text-gray-600 mt-1">Like</Text>
+            <Text className={`text-sm mt-1 text-gray-600`}>Like</Text>
           )}
         </TouchableOpacity>
         <TouchableOpacity

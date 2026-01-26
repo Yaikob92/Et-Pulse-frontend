@@ -59,6 +59,8 @@ export const newsApi = {
 export const commentApi = {
   createComment: (api: AxiosInstance, newsId: string, content: string) =>
     api.post(`/comment/news/${newsId}`, { content }),
+  likeComment: (api: AxiosInstance, commentId: string) =>
+    api.post(`/comment/${commentId}/like`),
 };
 
 export const bookmarkApi = {

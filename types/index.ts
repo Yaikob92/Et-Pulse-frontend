@@ -13,7 +13,8 @@ export interface NewsItem {
   createdAt: string;
   content?: string;
   mediaUrl?: string;
-  likes: string[];
+  likesCount: number;
+  isLiked: boolean;
   comments?: CommentType[];
 }
 
