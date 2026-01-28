@@ -3,18 +3,20 @@ import { Feather } from "@expo/vector-icons";
 import NewsList from "@/components/NewsList";
 import { useState } from "react";
 import { TextInput, View, ScrollView, TouchableOpacity, Text } from "react-native";
+import { useLocalSearchParams } from "expo-router";
 
 const categories = ["All", "Politics", "Sports", "Business", "Tech", "Entertainment"];
 
 export default function HomeScreen() {
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const { newsId } = useLocalSearchParams<{ newsId: string }>();
   useUserSync();
 
   return (
     <View className="flex-1 bg-gray-100">
       {/* Search Bar */}
       <View className="px-4 py-3 bg-white">
-        <View className="flex-row items-center bg-gray-100 rounded-full border border-black px-4 ">
+        <View className="flex-row items-center bg-[#F1F3F5] rounded-full px-4 ">
           <Feather name="search" size={20} color="#657786" />
           <TextInput
             placeholder="Search News"
@@ -47,7 +49,7 @@ export default function HomeScreen() {
       </View>
 
       {/* News List */}
-      <NewsList category={selectedCategory} />
+      <NewsList category={selectedCategory} newsId={newsId} />
     </View>
   );
 }

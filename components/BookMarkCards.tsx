@@ -1,53 +1,72 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { NewsItem } from "@/types";
 import { formatDate } from "@/utils/formatter";
+import { Ionicons } from "@expo/vector-icons";
+import { formatDistanceToNow } from "date-fns";
 
 type BookMarkProps = {
   item: NewsItem;
+  onRemove?: (newsId: string) => void;
+  onPress?: (newsId: string) => void;
 };
 
-export const BookMarkCards = ({ item }: BookMarkProps) => {
+export const BookMarkCards = ({ item, onRemove, onPress }: BookMarkProps) => {
+  const date = item.createdAt ? new Date(item.createdAt) : new Date();
+  const isValidDate = !isNaN(date.getTime());
+
+  const timeAgo = isValidDate
+    ? formatDistanceToNow(date, {
+      addSuffix: false,
+    })
+      .toUpperCase()
+      .replace("ABOUT ", "")
+    : "JUST NOW";
+
   return (
-    <View className="bg-white border-b border-gray-400 pb-4 mb-3">
-      {/* Header */}
-      <View className="flex-row items-center justify-between px-4 pt-4 mb-3">
-        <View className="flex-row items-center flex-1">
-          <Image
-            source={{ uri: item.channelProfilePic }}
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 22,
-              borderWidth: 2,
-              borderColor: "#F3F4F6",
-            }}
-          />
-          <View className="ml-3 flex-1">
-            <Text className="text-base font-bold text-gray-900">
-              {item.channelUsername.toUpperCase() ?? ""}
-            </Text>
-            <Text className="text-[13px] text-gray-500">
-              {formatDate(item.createdAt)}
-            </Text>
-          </View>
-        </View>
+    <TouchableOpacity
+      activeOpacity={0.7}
+      onPress={() => onPress?.(item._id)}
+      className="bg-white rounded-3xl p-4 mb-4 flex-row items-center shadow-sm"
+    >
+      {/* Image Section */}
+      <View className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-100">
+        <Image
+          source={{ uri: item.mediaUrl || item.channelProfilePic }}
+          className="w-full h-full"
+          resizeMode="cover"
+        />
       </View>
 
-      {/* Content */}
-      {item.content && (
-        <View className="px-4 mb-3">
-          <Text className="text-blue-600 mt-1">{item.content}</Text>
+      {/* Content Section */}
+      <View className="flex-1 ml-4 justify-between h-24">
+        <View className="flex-row justify-between items-start">
+          <View className="flex-1 mr-2">
+            <Text
+              className="text-[#1A1A1A] text-[15px] font-bold leading-5"
+              numberOfLines={2}
+            >
+              {item.content || "No title available"}
+            </Text>
+            <Text className="text-[#8E8E93] text-[13px] mt-1" numberOfLines={1}>
+              {item.content?.substring(0, 50)}...
+            </Text>
+          </View>
+          <TouchableOpacity onPress={() => onRemove?.(item._id)}>
+            <Ionicons name="bookmark" size={24} color="#00B4FF" />
+          </TouchableOpacity>
         </View>
-      )}
 
-      {/* Media */}
-      {item.mediaUrl && (
-        <Image
-          source={{ uri: item.mediaUrl }}
-          style={{ width: "100%", height: 256 }}
-        />
-      )}
-    </View>
+        <View className="flex-row items-center">
+          <Text className="text-[#00B4FF] text-[11px] font-bold">
+            ET-PULSE {item.channelUsername.toUpperCase()}
+          </Text>
+          <View className="w-1 h-1 rounded-full bg-[#8E8E93] mx-2" />
+          <Text className="text-[#8E8E93] text-[11px] font-medium">
+            {timeAgo} AGO
+          </Text>
+        </View>
+      </View>
+    </TouchableOpacity>
   );
 };

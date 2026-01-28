@@ -12,14 +12,22 @@ import { NewsItem } from "@/types";
 
 import { useBookmarks } from "@/hooks/useBookmarks";
 import { BookMarkCards } from "./BookMarkCards";
+import { useRouter } from "expo-router";
 
 const BookMark = () => {
   const [refreshing, setRefreshing] = useState(false);
-  const { news, isLoading, isError, refetch } = useBookmarks();
+  const { news, isLoading, isError, refetch, saveBookMark } = useBookmarks();
+  const router = useRouter();
 
   const renderBookMarks = useCallback<ListRenderItem<NewsItem>>(
-    ({ item }) => <BookMarkCards item={item} />,
-    [],
+    ({ item }) => (
+      <BookMarkCards
+        item={item}
+        onRemove={saveBookMark}
+        onPress={() => router.push({ pathname: "/", params: { newsId: item._id } })}
+      />
+    ),
+    [saveBookMark, router],
   );
 
   const onRefresh = async () => {

@@ -1,4 +1,5 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
+import { useState } from "react";
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { formatDate, formatNumber } from "@/utils/formatter";
 import { NewsItem, User } from "@/types";
@@ -22,6 +23,15 @@ export const NewsItemCard = ({
   onBookmark,
   isBookmarked,
 }: NewsCardProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const CONTENT_LIMIT = 150;
+
+  const shouldTruncate = item.content && item.content.length > CONTENT_LIMIT;
+  const displayText =
+    shouldTruncate && !isExpanded
+      ? `${item.content?.substring(0, CONTENT_LIMIT)}...`
+      : item.content;
+
   return (
     <View className="bg-white border-b border-gray-400 pb-4 mb-3">
       {/* Header */}
@@ -62,7 +72,19 @@ export const NewsItemCard = ({
       {/* Content */}
       {item.content && (
         <View className="px-4 mb-3">
-          <Text className="text-blue-600 mt-1">{item.content}</Text>
+          <Text className="text-gray-800 text-base leading-relaxed">
+            {displayText}
+          </Text>
+          {shouldTruncate && (
+            <TouchableOpacity
+              onPress={() => setIsExpanded(!isExpanded)}
+              className="mt-1"
+            >
+              <Text className="text-blue-600 font-semibold">
+                {isExpanded ? "See Less" : "See More"}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       )}
 

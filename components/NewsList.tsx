@@ -1,7 +1,7 @@
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useFetchNews } from "@/hooks/useNews";
 import { NewsItem } from "@/types";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -17,15 +17,34 @@ import { useBookmarks } from "@/hooks/useBookmarks";
 
 interface NewsListProps {
   category?: string;
+  newsId?: string;
 }
 
-const NewsList = ({ category }: NewsListProps) => {
+const NewsList = ({ category, newsId }: NewsListProps) => {
   const { currentUser } = useCurrentUser();
   const { news, isLoading, isError, refetch, toggleLike } =
     useFetchNews();
   const { saveBookMark, checkIsBookmarked } = useBookmarks();
   const [refreshing, setRefreshing] = useState(false);
   const [selectedNewsId, setSelectedNewsId] = useState<string | null>(null);
+  const flatListRef = useRef<FlatList>(null);
+
+  useEffect(() => {
+    if (newsId && news && news.length > 0) {
+      const index = news.findIndex((item: NewsItem) => item._id === newsId);
+      if (index !== -1) {
+        // Use a small timeout to ensure the list is rendered
+        const timer = setTimeout(() => {
+          flatListRef.current?.scrollToIndex({
+            index,
+            animated: true,
+            viewPosition: 0,
+          });
+        }, 300);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [newsId, news]);
 
   const selectedNews = selectedNewsId
     ? news.find((n: NewsItem) => n._id === selectedNewsId)
@@ -39,6 +58,14 @@ const NewsList = ({ category }: NewsListProps) => {
     toggleLike(newsId);
   };
 
+  const handleToggleBookmark = (newsId: string) => {
+    if (!currentUser) {
+      alert("Please log in to bookmark news.");
+      return;
+    }
+    saveBookMark(newsId);
+  };
+
   const renderNews = useCallback<ListRenderItem<NewsItem>>(
     ({ item }) => (
       <NewsItemCard
@@ -47,11 +74,11 @@ const NewsList = ({ category }: NewsListProps) => {
         currentUser={currentUser}
         onComment={() => setSelectedNewsId(item._id)}
         isBookmarked={checkIsBookmarked(item._id)}
-        onBookmark={saveBookMark}
+        onBookmark={handleToggleBookmark}
         isLiked={item.isLiked}
       />
     ),
-    [handleToggleLike, currentUser, saveBookMark, checkIsBookmarked],
+    [handleToggleLike, currentUser, handleToggleBookmark, checkIsBookmarked],
   );
 
   const onRefresh = async () => {
@@ -92,12 +119,22 @@ const NewsList = ({ category }: NewsListProps) => {
   return (
     <>
       <FlatList
+        ref={flatListRef}
         data={news}
         renderItem={renderNews}
         keyExtractor={(item) => item._id}
         extraData={news}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 80 }}
+        onScrollToIndexFailed={(info) => {
+          const wait = new Promise((resolve) => setTimeout(resolve, 500));
+          wait.then(() => {
+            flatListRef.current?.scrollToIndex({
+              index: info.index,
+              animated: true,
+            });
+          });
+        }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
