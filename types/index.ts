@@ -25,6 +25,7 @@ export interface CommentType {
   username: string;
   profilePicture: string;
   content: string;
-  likes: string;
+  likes: string[];
+  parentComment?: string;
   createdAt: string;
 }

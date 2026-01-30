@@ -3,9 +3,12 @@ import { Text, View, TextInput, ScrollView, TouchableOpacity } from "react-nativ
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 
+
+
+const categories = ["All", "Politics", "Sports", "Business", "Tech", "Entertainment"];
+
 export default function Bookmarks() {
-  const [activeCategory, setActiveCategory] = useState("All");
-  const categories = ["All", "Finance", "Tech", "Sports", "AI"];
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   return (
     <View className="flex-1">
@@ -32,21 +35,22 @@ export default function Bookmarks() {
         </View>
 
         {/* Categories */}
+
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          className="flex-row"
+
         >
           {categories.map((category) => (
             <TouchableOpacity
               key={category}
-              onPress={() => setActiveCategory(category)}
-              className={`px-6 py-2 rounded-full mr-3 ${activeCategory === category ? "bg-black" : "bg-gray-200"
+              onPress={() => setSelectedCategory(category)}
+              className={`px-4 py-2 rounded-full mr-2 ${selectedCategory === category ? "bg-black" : "bg-gray-200"
                 }`}
             >
               <Text
-                className={`text-sm font-semibold ${activeCategory === category ? "text-white" : "text-black"
-                  }`}
+                className={`${selectedCategory === category ? "text-white" : "text-black"
+                  } font-medium`}
               >
                 {category}
               </Text>

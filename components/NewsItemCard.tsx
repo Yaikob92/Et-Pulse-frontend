@@ -63,7 +63,7 @@ export const NewsItemCard = ({
             />
           </TouchableOpacity>
           <TouchableOpacity className="flex-row items-center ml-5">
-            <Ionicons name="add-outline" size={25} color="#2467f9ff" />
+            <Ionicons name="add-outline" size={20} color="#2467f9ff" />
             <Text className="text-blue-600 text-lg">Follow</Text>
           </TouchableOpacity>
         </View>

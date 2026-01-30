@@ -53,7 +53,7 @@ export const BookMarkCards = ({ item, onRemove, onPress }: BookMarkProps) => {
             </Text>
           </View>
           <TouchableOpacity onPress={() => onRemove?.(item._id)}>
-            <Ionicons name="bookmark" size={24} color="#00B4FF" />
+            <Ionicons name="bookmark" size={20} color="#2467f9ff" />
           </TouchableOpacity>
         </View>
 

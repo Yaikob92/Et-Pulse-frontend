@@ -61,6 +61,8 @@ export const commentApi = {
     api.post(`/comment/news/${newsId}`, { content }),
   likeComment: (api: AxiosInstance, commentId: string) =>
     api.post(`/comment/${commentId}/like`),
+  addReply: (api: AxiosInstance, commentId: string, content: string) =>
+    api.post(`/comment/${commentId}/reply`, { content }),
 };
 
 export const bookmarkApi = {

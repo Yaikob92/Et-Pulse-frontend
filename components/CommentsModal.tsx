@@ -25,6 +25,8 @@ const CommentsModal = ({ selectedNews, onClose }: CommentsProps) => {
   const {
     commentText,
     setCommentText,
+    replyingTo,
+    setReplyingTo,
     createComment,
     likeComment,
     isCreatingComment,
@@ -33,9 +35,15 @@ const CommentsModal = ({ selectedNews, onClose }: CommentsProps) => {
   const handleClose = () => {
     onClose();
     setCommentText("");
+    setReplyingTo(null);
   };
 
   const totalComments = selectedNews?.comments?.length || 0;
+
+  // Group comments and replies
+  const comments = (selectedNews?.comments?.filter(c => !c.parentComment) || [])
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const replies = selectedNews?.comments?.filter(c => c.parentComment) || [];
 
   return (
     <Modal
@@ -79,62 +87,125 @@ const CommentsModal = ({ selectedNews, onClose }: CommentsProps) => {
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ paddingBottom: 20 }}
             >
-              {selectedNews.comments && selectedNews.comments.length > 0 ? (
-                selectedNews.comments.map((comment) => (
-                  <View key={comment._id} className="flex-row mb-6">
-                    <Image
-                      source={{ uri: comment.user.profilePicture }}
-                      className="w-12 h-12 rounded-full mr-3"
-                    />
+              {comments.length > 0 ? (
+                comments.map((comment) => (
+                  <View key={comment._id} className="mb-6">
+                    <View className="flex-row">
+                      <Image
+                        source={{ uri: comment.user.profilePicture }}
+                        className="w-12 h-12 rounded-full mr-3"
+                      />
 
-                    <View className="flex-1">
-                      <View className="flex-row items-baseline mb-1">
-                        <Text className="text-base font-bold text-gray-900 mr-2">
-                          {comment.user.firstName} {comment.user.lastName}
+                      <View className="flex-1">
+                        <View className="flex-row items-baseline mb-1">
+                          <Text className="text-base font-bold text-gray-900 mr-2">
+                            {comment.user.firstName} {comment.user.lastName}
+                          </Text>
+                          <Text className="text-xs text-gray-400">
+                            {formatDate(comment.createdAt)} ago
+                          </Text>
+                        </View>
+
+                        <Text className="text-[#334155] text-base leading-5 mb-3">
+                          {comment.content}
                         </Text>
-                        <Text className="text-xs text-gray-400">
-                          {formatDate(comment.createdAt)} ago
-                        </Text>
-                      </View>
 
-                      <Text className="text-[#334155] text-base leading-5 mb-3">
-                        {comment.content}
-                      </Text>
-
-                      <View className="flex-row items-center">
-                        <TouchableOpacity
-                          onPress={() => likeComment(comment._id)}
-                          className="flex-row items-center mr-6"
-                        >
-                          <FontAwesome
-                            name={
-                              comment.likes?.includes(currentUser?._id)
-                                ? "thumbs-up"
-                                : "thumbs-o-up"
-                            }
-                            size={15}
-                            color={
-                              comment.likes?.includes(currentUser?._id)
-                                ? "#000"
-                                : "#64748b"
-                            }
-                          />
-                          <Text
-                            className={`text-sm font-semibold ml-2 ${comment.likes?.includes(currentUser?._id)
-                              ? "text-blue-500"
-                              : "text-gray-500"
-                              }`}
+                        <View className="flex-row items-center">
+                          <TouchableOpacity
+                            onPress={() => likeComment(comment._id)}
+                            className="flex-row items-center mr-6"
                           >
-                            {comment.likes?.length || 0}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                          <Text className="text-sm font-bold text-gray-500">
-                            Reply
-                          </Text>
-                        </TouchableOpacity>
+                            <FontAwesome
+                              name={
+                                comment.likes?.includes(currentUser?._id)
+                                  ? "thumbs-up"
+                                  : "thumbs-o-up"
+                              }
+                              size={15}
+                              color={
+                                comment.likes?.includes(currentUser?._id)
+                                  ? "#000"
+                                  : "#64748b"
+                              }
+                            />
+                            <Text
+                              className={`text-sm font-semibold ml-2 ${comment.likes?.includes(currentUser?._id)
+                                ? "text-blue-500"
+                                : "text-gray-500"
+                                }`}
+                            >
+                              {comment.likes?.length || 0}
+                            </Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() =>
+                              setReplyingTo({
+                                id: comment._id,
+                                username: `${comment.user.firstName} ${comment.user.lastName}`,
+                              })
+                            }
+                          >
+                            <Text className="text-sm font-bold text-gray-500">
+                              Reply
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
                       </View>
                     </View>
+
+                    {/* REPLIES */}
+                    {replies
+                      .filter((r) => r.parentComment === comment._id)
+                      .map((reply) => (
+                        <View
+                          key={reply._id}
+                          className="flex-row mt-4 ml-10 pl-3 border-l-2 border-gray-100"
+                        >
+                          <Image
+                            source={{ uri: reply.user.profilePicture }}
+                            className="w-8 h-8 rounded-full mr-2"
+                          />
+                          <View className="flex-1">
+                            <View className="flex-row items-baseline mb-1">
+                              <Text className="text-sm font-bold text-gray-900 mr-2">
+                                {reply.user.firstName} {reply.user.lastName}
+                              </Text>
+                              <Text className="text-[10px] text-gray-400">
+                                {formatDate(reply.createdAt)} ago
+                              </Text>
+                            </View>
+                            <Text className="text-[#334155] text-sm leading-5 mb-2">
+                              {reply.content}
+                            </Text>
+                            <TouchableOpacity
+                              onPress={() => likeComment(reply._id)}
+                              className="flex-row items-center"
+                            >
+                              <FontAwesome
+                                name={
+                                  reply.likes?.includes(currentUser?._id)
+                                    ? "thumbs-up"
+                                    : "thumbs-o-up"
+                                }
+                                size={12}
+                                color={
+                                  reply.likes?.includes(currentUser?._id)
+                                    ? "#000"
+                                    : "#64748b"
+                                }
+                              />
+                              <Text
+                                className={`text-xs font-semibold ml-1.5 ${reply.likes?.includes(currentUser?._id)
+                                  ? "text-blue-500"
+                                  : "text-gray-500"
+                                  }`}
+                              >
+                                {reply.likes?.length || 0}
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      ))}
                   </View>
                 ))
               ) : (
@@ -153,6 +224,16 @@ const CommentsModal = ({ selectedNews, onClose }: CommentsProps) => {
 
           {/* FOOTER INPUT */}
           <View className="px-4 pt-3 pb-10 border-t border-gray-100 bg-white">
+            {replyingTo && (
+              <View className="flex-row items-center justify-between bg-blue-50 px-4 py-3 rounded-xl mb-2 border border-blue-100">
+                <Text className="text-sm text-blue-600">
+                  Replying to <Text className="font-bold text-blue-700">{replyingTo.username}</Text>
+                </Text>
+                <TouchableOpacity onPress={() => setReplyingTo(null)}>
+                  <Feather name="x-circle" size={18} color="#2563eb" />
+                </TouchableOpacity>
+              </View>
+            )}
             <View className="flex-row items-center">
               <Image
                 source={{ uri: currentUser?.profilePicture }}
@@ -160,7 +241,7 @@ const CommentsModal = ({ selectedNews, onClose }: CommentsProps) => {
               />
               <View className="flex-1 flex-row items-center bg-[#f1f5f9] rounded-3xl px-4 py-2 border border-gray-200">
                 <TextInput
-                  placeholder="Add a comment..."
+                  placeholder={replyingTo ? `Reply to ${replyingTo.username}...` : "Add a comment..."}
                   placeholderTextColor="#94a3b8"
                   className="flex-1 text-gray-900 py-1"
                   value={commentText}
