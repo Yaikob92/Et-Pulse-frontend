@@ -7,6 +7,7 @@ import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useColorScheme } from "nativewind";
 import { useEffect } from "react";
 import { View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import "../global.css";
 
@@ -41,12 +42,15 @@ export default function RootLayout() {
   return (
     <ClerkProvider tokenCache={tokenCache}>
       <QueryClientProvider client={queryclient}>
-        <SafeAreaProvider>
-          <ThemeProvider>
-            <ThemedApp />
-          </ThemeProvider>
-        </SafeAreaProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <SafeAreaProvider>
+            <ThemeProvider>
+              <ThemedApp />
+            </ThemeProvider>
+          </SafeAreaProvider>
+        </GestureHandlerRootView>
       </QueryClientProvider>
     </ClerkProvider>
   );
 }
+
