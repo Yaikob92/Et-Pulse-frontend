@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import React from "react";
 import {
+  ActivityIndicator,
   Image,
   ScrollView,
   Text,
@@ -21,6 +22,8 @@ export default function Page() {
     onSignInPress,
     handleSocialAuth,
     loadingProvider,
+    error,
+    loading,
   } = useLogin();
 
   const [rememberMe, setRememberMe] = React.useState(false);
@@ -82,6 +85,8 @@ export default function Page() {
                 onChangeText={setEmailAddress}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                autoComplete="email"
+                textContentType="emailAddress"
                 style={{
                   borderWidth: 1,
                   borderColor: "#e2e8f0",
@@ -98,6 +103,8 @@ export default function Page() {
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
+                autoComplete="password"
+                textContentType="password"
                 style={{
                   borderWidth: 1,
                   borderColor: "#e2e8f0",
@@ -137,11 +144,17 @@ export default function Page() {
               </Link>
             </View>
 
+            {error ? (
+              <View style={{ backgroundColor: '#fef2f2', padding: 12, borderRadius: 8, marginBottom: 16, borderWidth: 1, borderColor: '#fee2e2' }}>
+                <Text style={{ color: '#dc2626', fontSize: 12, textAlign: 'center', fontWeight: '500' }}>{error}</Text>
+              </View>
+            ) : null}
+
             <TouchableOpacity
               onPress={onSignInPress}
-              disabled={loadingProvider === "google" || loadingProvider === "apple"}
+              disabled={loading || loadingProvider === "google" || loadingProvider === "apple"}
               style={{
-                backgroundColor: "#3b59df",
+                backgroundColor: (loading || loadingProvider === "google" || loadingProvider === "apple") ? "#94a3b8" : "#3b59df",
                 padding: 16,
                 borderRadius: 8,
                 alignItems: "center",
@@ -150,7 +163,11 @@ export default function Page() {
                 shadowRadius: 10,
                 elevation: 5
               }}>
-              <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 14, textTransform: 'uppercase', letterSpacing: 1 }}>LOGIN</Text>
+              {loading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 14, textTransform: 'uppercase', letterSpacing: 1 }}>LOGIN</Text>
+              )}
             </TouchableOpacity>
 
             <View style={{ flexDirection: "row", alignItems: "center", marginVertical: 24 }}>

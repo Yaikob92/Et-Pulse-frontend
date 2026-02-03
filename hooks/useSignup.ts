@@ -2,22 +2,27 @@ import { useSignUp } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
 import * as React from "react";
 
+import { parseClerkError } from "../utils/errorParser";
+
 export const useSignup = () => {
   const { isLoaded, signUp, setActive } = useSignUp();
   const router = useRouter();
 
   const [emailAddress, setEmailAddress] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [username, setUsername] = React.useState("");
   const [fullName, setFullName] = React.useState("");
   const [pendingVerification, setPendingVerification] = React.useState(false);
   const [code, setCode] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
   // Handle submission of sign-up form
   const onSignUpPress = async () => {
     if (!isLoaded) return;
 
-    // Start sign-up process using email and password provided
+    setLoading(true);
+    setError(null);
+
     try {
       const nameParts = fullName.trim().split(" ");
       const firstName = nameParts[0];
@@ -26,7 +31,6 @@ export const useSignup = () => {
       await signUp.create({
         emailAddress: emailAddress.trim(),
         password,
-        username,
         firstName,
         lastName,
       });
@@ -35,18 +39,22 @@ export const useSignup = () => {
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
 
       // Set 'pendingVerification' to true to display second form
-      // and capture OTP code
       setPendingVerification(true);
-    } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
+    } catch (err: any) {
+      console.log("Signup error:", err);
+      const errorMessage = parseClerkError(err);
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
   // Handle submission of verification form
   const onVerifyPress = async () => {
     if (!isLoaded) return;
+
+    setLoading(true);
+    setError(null);
 
     try {
       // Use the code the user provided to attempt verification
@@ -62,12 +70,15 @@ export const useSignup = () => {
       } else {
         // If the status is not complete, check why. User may need to
         // complete further steps.
-        console.error(JSON.stringify(signUpAttempt, null, 2));
+        console.log("Verification incomplete:", signUpAttempt);
+        setError("Verification incomplete. Please try again or contact support.");
       }
-    } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
+    } catch (err: any) {
+      console.log("Verification error:", err);
+      const errorMessage = parseClerkError(err);
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,12 +89,13 @@ export const useSignup = () => {
     setEmailAddress,
     password,
     setPassword,
-    username,
-    setUsername,
     fullName,
     setFullName,
     pendingVerification,
     setPendingVerification,
+    loading,
+    error,
+    setError,
     onSignUpPress,
     onVerifyPress,
   };

@@ -18,6 +18,7 @@ export default function ResetPassword() {
         error,
         loading,
         step,
+        timeLeft,
         onRequestReset,
         onResetPassword,
     } = useResetPassword();
@@ -65,7 +66,7 @@ export default function ResetPassword() {
 
                         <Text style={{ fontSize: 16, fontWeight: "600", marginTop: 8, color: "#1a2b4b" }}>
                             {step === "request"
-                                ? "Reset to your username/password"
+                                ? "Reset to your username"
                                 : "Enter your reset code and new password"}
                         </Text>
 
@@ -87,7 +88,7 @@ export default function ResetPassword() {
                                     <Ionicons name="mail-outline" size={18} color="#94a3b8" />
                                 </View>
                                 <TextInput
-                                    placeholder="Email or Username"
+                                    placeholder="Email"
                                     value={email}
                                     onChangeText={setEmail}
                                     keyboardType="email-address"
@@ -107,6 +108,16 @@ export default function ResetPassword() {
                         {step === "reset" && (
                             <>
                                 <View style={{ marginBottom: 16 }}>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8, paddingHorizontal: 4 }}>
+                                        <Text style={{ fontSize: 12, color: "#64748b" }}>Reset Code</Text>
+                                        {timeLeft !== null && timeLeft > 0 ? (
+                                            <Text style={{ fontSize: 12, color: timeLeft < 60 ? "#dc2626" : "#3b59df", fontWeight: "600" }}>
+                                                Expires in: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+                                            </Text>
+                                        ) : (
+                                            <Text style={{ fontSize: 12, color: "#dc2626", fontWeight: "600" }}>Code expired</Text>
+                                        )}
+                                    </View>
                                     <TextInput
                                         placeholder="Reset Code"
                                         value={code}
@@ -155,9 +166,9 @@ export default function ResetPassword() {
 
                         <TouchableOpacity
                             onPress={step === "request" ? onRequestReset : onResetPassword}
-                            disabled={loading}
+                            disabled={loading || (step === "reset" && timeLeft === 0)}
                             style={{
-                                backgroundColor: "#3b59df",
+                                backgroundColor: (loading || (step === "reset" && timeLeft === 0)) ? "#94a3b8" : "#3b59df",
                                 padding: 16,
                                 borderRadius: 16,
                                 alignItems: "center",
