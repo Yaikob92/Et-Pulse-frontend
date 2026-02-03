@@ -1,15 +1,15 @@
-import { COLORS } from "@/constants/theme";
+
 import { useLogin } from "@/hooks/useLogin";
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import React from "react";
 import {
-  ActivityIndicator,
   Image,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
 export default function Page() {
@@ -23,121 +23,165 @@ export default function Page() {
     loadingProvider,
   } = useLogin();
 
+  const [rememberMe, setRememberMe] = React.useState(false);
+
   return (
-    <View className="flex-1 items-center justify-center px-6 bg-white">
-      <View className="items-center mb-8">
-        <View className="w-15 h-15 rounded-2xl bg-[rgba(74,222,128,0.15)] justify-center items-center mb-5">
-          <Ionicons name="newspaper-outline" size={32} color={COLORS.primary} />
-        </View>
-        <Text className="text-[42px] font-bold text-primary tracking-[0.5px] mb-2 font-jetbrains">
-          Et-Pulse
-        </Text>
-        <Text className="text-[16px] text-grey tracking-[1px] lowercase font-jetbrains">
-          don&apos;t miss anything!
-        </Text>
-      </View>
-      <Text className="text-2xl font-bold mb-4">Sign in</Text>
-      <TextInput
-        className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-3"
-        autoCapitalize="none"
-        value={emailAddress}
-        placeholder="Enter email"
-        onChangeText={(email) => setEmailAddress(email)}
-      />
+    <View style={{ flex: 1, backgroundColor: "#f3f4f7" }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 16 }}>
+        <View style={{ width: "100%", maxWidth: 400, alignSelf: "center", position: "relative" }}>
 
-      <TextInput
-        className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4"
-        value={password}
-        placeholder="Enter password"
-        secureTextEntry={true}
-        onChangeText={(pass) => setPassword(pass)}
-      />
-
-      <TouchableOpacity
-        onPress={onSignInPress}
-        className="w-full bg-blue-600 rounded-lg py-3"
-      >
-        <Text className="text-center text-white font-semibold text-lg">
-          Continue
-        </Text>
-      </TouchableOpacity>
-
-      <View className="flex-row mt-4">
-        <Text className="text-gray-600">Don&apos;t have an account? </Text>
-        <Link href="/sign-up">
-          <Text className="text-blue-600 font-semibold">Sign up</Text>
-        </Link>
-      </View>
-
-      <View className="flex-row gap-2 mt-6">
-        {/* Google Sign btn */}
-        <TouchableOpacity
-          className="flex-row items-center justify-center bg-white border border-gray-300 rounded-full py-3 px-6"
-          onPress={() => {
-            handleSocialAuth("oauth_google");
-          }}
-          disabled={loadingProvider === "google"}
-          style={{
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.1,
-            shadowRadius: 2,
-            elevation: 2,
-            height: 48,
-            width: 200,
-          }}
-        >
-          {loadingProvider === "google" ? (
-            <ActivityIndicator size="small" color="#000" />
-          ) : (
-            <View className="flex-row items-center justify-center">
+          {/* Logo */}
+          <View style={{
+            position: "absolute",
+            top: -40,
+            left: "50%",
+            transform: [{ translateX: -32 }],
+            zIndex: 10
+          }}>
+            <View style={{
+              backgroundColor: "#fff",
+              padding: 8,
+              borderRadius: 999,
+              shadowColor: "#000",
+              shadowOpacity: 0.2,
+              shadowRadius: 10
+            }}>
               <Image
-                source={require("../../assets/images/google.png")}
-                className="size-8 mr-3"
+                //   source={require("../../assets/images/logo-abbr.png")}
+                // source={require("../../assets/images/logo.png")}
+                style={{ width: 64, height: 64, borderRadius: 32 }}
               />
-              <Text className="text-black font-medium text-base">
-                Continue with Google
-              </Text>
             </View>
-          )}
-        </TouchableOpacity>
-
-        {/* Apple Sign Icon */}
-        <TouchableOpacity
-          className="flex-row items-center justify-center bg-white border border-gray-300 rounded-full py-3 px-6"
-          onPress={() => {
-            handleSocialAuth("oauth_apple");
-          }}
-          disabled={loadingProvider === "apple"}
-          style={{
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.1,
-            shadowRadius: 2,
-            elevation: 2,
-            height: 48,
-            minWidth: 200,
-          }}
-        >
-          <View className="flex-row items-center justify-center">
-            {loadingProvider === "apple" ? (
-              <ActivityIndicator size="small" color="#000" />
-            ) : (
-              <View className="flex-row items-center justify-center">
-                <Image
-                  source={require("../../assets/images/apple.png")}
-                  className="size-8 mr-3"
-                />
-                <Text className="text-black font-medium text-base">
-                  Continue with Apple
-                </Text>
-              </View>
-            )}
           </View>
-        </TouchableOpacity>
-      </View>
-      {/* Terms and Policy */}
-      <Text className="text-center text-gray-500 text-xs leading-4 mt-6 px-2"></Text>
+
+          <View style={{
+            backgroundColor: "#fff",
+            borderRadius: 24,
+            padding: 32,
+            paddingTop: 48,
+            shadowColor: "#000",
+            shadowOpacity: 0.15,
+            shadowRadius: 20
+          }}>
+            <Text style={{ fontSize: 28, fontWeight: "bold", color: "#1a2b4b" }}>
+              Login
+            </Text>
+
+            <Text style={{ fontSize: 16, fontWeight: "600", marginTop: 8, color: "#1a2b4b" }}>
+              Login to your account
+            </Text>
+
+            <Text style={{ fontSize: 12, color: "#64748b", marginTop: 8, marginBottom: 24 }}>
+              Thank you for get back Et-Pulse news application, let's access our the best news for you.
+            </Text>
+
+            <View style={{ marginBottom: 16 }}>
+              <TextInput
+                placeholder="admin@etpulse.com"
+                value={emailAddress}
+                onChangeText={setEmailAddress}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                style={{
+                  borderWidth: 1,
+                  borderColor: "#e2e8f0",
+                  borderRadius: 8,
+                  padding: 14,
+                  fontSize: 14
+                }}
+              />
+            </View>
+
+            <View style={{ marginBottom: 16 }}>
+              <TextInput
+                placeholder="••••••"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                style={{
+                  borderWidth: 1,
+                  borderColor: "#e2e8f0",
+                  borderRadius: 8,
+                  padding: 14,
+                  fontSize: 14
+                }}
+              />
+            </View>
+
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: 'center', marginBottom: 24 }}>
+              <TouchableOpacity
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}
+                onPress={() => setRememberMe(!rememberMe)}
+              >
+                <View style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  borderColor: '#e2e8f0',
+                  backgroundColor: rememberMe ? '#3b59df' : '#f1f5f9',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  {rememberMe && <Ionicons name="checkmark" size={14} color="#fff" />}
+                </View>
+                <Text style={{ color: "#1a2b4b", fontWeight: "500", fontSize: 14 }}>Remember Me</Text>
+              </TouchableOpacity>
+
+              <Link href="/(auth)/ResetPassword" asChild>
+                <TouchableOpacity>
+                  <Text style={{ color: "#3b59df", fontWeight: "600", fontSize: 14 }}>
+                    Forget password?
+                  </Text>
+                </TouchableOpacity>
+              </Link>
+            </View>
+
+            <TouchableOpacity
+              onPress={onSignInPress}
+              disabled={loadingProvider === "google" || loadingProvider === "apple"}
+              style={{
+                backgroundColor: "#3b59df",
+                padding: 16,
+                borderRadius: 8,
+                alignItems: "center",
+                shadowColor: "#3b59df",
+                shadowOpacity: 0.2,
+                shadowRadius: 10,
+                elevation: 5
+              }}>
+              <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 14, textTransform: 'uppercase', letterSpacing: 1 }}>LOGIN</Text>
+            </TouchableOpacity>
+
+            <View style={{ flexDirection: "row", alignItems: "center", marginVertical: 24 }}>
+              <View style={{ flex: 1, height: 1, backgroundColor: "#e5e7eb" }} />
+              <Text style={{ marginHorizontal: 16, color: "#9ca3af", fontSize: 12 }}>
+                OR
+              </Text>
+              <View style={{ flex: 1, height: 1, backgroundColor: "#e5e7eb" }} />
+            </View>
+
+            <View style={{ flexDirection: 'row', gap: 12, justifyContent: 'center' }}>
+              <TouchableOpacity onPress={() => handleSocialAuth('oauth_google')} style={{ paddingVertical: 4, paddingHorizontal: 32, borderRadius: 6, borderWidth: 1, borderColor: '#e2e8f0' }}>
+                <Image source={require("../../assets/images/google.png")} style={{ width: 40, height: 40 }} resizeMode="contain" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleSocialAuth('oauth_apple')} style={{ paddingVertical: 8, paddingHorizontal: 32, borderRadius: 6, borderWidth: 1, borderColor: '#e2e8f0' }}>
+                <Image source={require("../../assets/images/apple.png")} style={{ width: 28, height: 28 }} resizeMode="contain" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 32 }}>
+              <Text style={{ color: "#64748b", fontSize: 14 }}>Don't have an account? </Text>
+              <Link href="/(auth)/Register" asChild>
+                <TouchableOpacity>
+                  <Text style={{ color: "#1a2b4b", fontWeight: "bold", fontSize: 14 }}>Create an Account</Text>
+                </TouchableOpacity>
+              </Link>
+            </View>
+
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 }

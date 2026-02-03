@@ -1,6 +1,6 @@
+import { useApiClient, userApi } from "@/utils/api";
 import { useAuth } from "@clerk/clerk-expo";
 import { useMutation } from "@tanstack/react-query";
-import { useApiClient, userApi } from "@/utils/api";
 import { useEffect } from "react";
 
 export const useUserSync = () => {
@@ -8,7 +8,16 @@ export const useUserSync = () => {
   const api = useApiClient();
 
   const syncUserMutation = useMutation({
-    mutationFn: () => userApi.syncUser(api),
+    mutationFn: async () => {
+      try {
+        return await userApi.syncUser(api);
+      } catch (error: any) {
+        if (error.response?.data?.error?.includes("E11000")) {
+          return { data: { message: "User already synced" } };
+        }
+        throw error;
+      }
+    },
     onSuccess: (response: any) => {
       console.log("User synced successfully:", response.data.message);
     },

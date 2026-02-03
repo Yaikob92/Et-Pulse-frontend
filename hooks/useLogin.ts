@@ -40,7 +40,7 @@ export const useLogin = () => {
       const { createdSessionId, setActive } = await startSSOFlow({ strategy });
       if (createdSessionId && setActive) {
         await setActive({ session: createdSessionId });
-        router.replace("/(tabs)");
+        router.replace("/");
       }
     } catch (error) {
       console.log("Error in social auth", error);

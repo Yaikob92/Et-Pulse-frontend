@@ -11,10 +11,16 @@ export default function InitialLayout() {
   useEffect(() => {
     if (!isLoaded) return;
 
-    const inAuthScreen = segments[0] === "(auth)";
+    // Check if the user is in an authentication group
+    const inAuthGroup = segments[0] === "(auth)";
 
-    if (!isSignedIn && !inAuthScreen) router.replace("/(auth)/login");
-    else if (isSignedIn && inAuthScreen) router.replace("/(tabs)");
+    if (!isSignedIn && !inAuthGroup) {
+      // Bring them back to the login screen
+      router.replace("/(auth)/login");
+    } else if (isSignedIn && inAuthGroup) {
+      // Go to tabs root
+      router.replace("/");
+    }
   }, [isLoaded, isSignedIn, segments, router]);
 
   if (!isLoaded) return null;

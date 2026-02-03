@@ -8,6 +8,8 @@ export const useSignup = () => {
 
   const [emailAddress, setEmailAddress] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [username, setUsername] = React.useState("");
+  const [fullName, setFullName] = React.useState("");
   const [pendingVerification, setPendingVerification] = React.useState(false);
   const [code, setCode] = React.useState("");
 
@@ -17,9 +19,16 @@ export const useSignup = () => {
 
     // Start sign-up process using email and password provided
     try {
+      const nameParts = fullName.trim().split(" ");
+      const firstName = nameParts[0];
+      const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+
       await signUp.create({
-        emailAddress,
+        emailAddress: emailAddress.trim(),
         password,
+        username,
+        firstName,
+        lastName,
       });
 
       // Send user an email with verification code
@@ -69,6 +78,10 @@ export const useSignup = () => {
     setEmailAddress,
     password,
     setPassword,
+    username,
+    setUsername,
+    fullName,
+    setFullName,
     pendingVerification,
     setPendingVerification,
     onSignUpPress,
