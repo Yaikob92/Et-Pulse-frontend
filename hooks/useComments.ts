@@ -67,11 +67,14 @@ export const useComments = () => {
             let newsItems: any[] = [];
             let isBookmark = false;
 
-            if (old?.data?.news) {
-              newsItems = old.data.news;
-            } else if (old?.data?.bookMarks) {
-              newsItems = old.data.bookMarks.map((bm: any) => bm.news).filter(Boolean);
-              isBookmark = true;
+            if (Array.isArray(old)) {
+              // If the data is an array, we determine what it is based on the key
+              if (JSON.stringify(key).includes("news")) {
+                newsItems = old;
+              } else if (JSON.stringify(key).includes("bookmarkNews")) {
+                newsItems = old.map((bm: any) => bm.news).filter(Boolean);
+                isBookmark = true;
+              }
             } else {
               return old;
             }
@@ -103,19 +106,13 @@ export const useComments = () => {
             });
 
             if (isBookmark) {
-              return {
-                ...old,
-                data: {
-                  ...old.data,
-                  bookMarks: old.data.bookMarks.map((bm: any) => {
-                    const updated = updatedNewsItems.find(n => n._id === bm.news?._id);
-                    return updated ? { ...bm, news: updated } : bm;
-                  })
-                }
-              };
+              return old.map((bm: any) => {
+                const updated = updatedNewsItems.find(n => n._id === bm.news?._id);
+                return updated ? { ...bm, news: updated } : bm;
+              });
             }
 
-            return { ...old, data: { ...old.data, news: updatedNewsItems } };
+            return updatedNewsItems;
           });
         }
       }

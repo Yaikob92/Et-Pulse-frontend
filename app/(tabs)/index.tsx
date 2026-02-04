@@ -1,15 +1,16 @@
 import { useUserSync } from "@/hooks/useUserSync";
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import NewsList from "@/components/NewsList";
 import { useState } from "react";
 import { TextInput, View, ScrollView, TouchableOpacity, Text, Image } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 const categories = ["All", "Politics", "Sports", "Business", "Tech", "Entertainment"];
 
 export default function HomeScreen() {
   const { currentUser } = useCurrentUser();
+  const router = useRouter();
 
   const [selectedCategory, setSelectedCategory] = useState("All");
   const { newsId } = useLocalSearchParams<{ newsId: string }>();
@@ -17,16 +18,41 @@ export default function HomeScreen() {
 
   return (
     <View className="flex-1 bg-gray-100">
-      {/* Search Bar */}
-      <View className="px-4 py-3 bg-white">
-        <View className="flex-row items-center bg-[#F1F3F5] rounded-full px-4 ">
-          <Feather name="search" size={20} color="#6577zz86" />
-          <TextInput
-            placeholder="Search News"
-            className="flex-1 ml-2 text-base"
-            placeholderTextColor="#657786"
-          />
+      {/* Header Area */}
+      <View className="bg-white px-4 pt-3 pb-2">
+        <View className="flex-row items-center">
+          {/* Profile Picture */}
+          <TouchableOpacity
+            className="mr-3"
+            onPress={() => router.push("/profile")}
+          >
+            <Image
+              source={{
+                uri: currentUser?.profilePicture || "https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff",
+              }}
+              className="w-10 h-10 rounded-full"
+            />
+          </TouchableOpacity>
+
+          {/* Search Bar */}
+          <View className="flex-1 flex-row items-center bg-[#F1F3F5] rounded-full px-4 h-11">
+            <Feather name="search" size={20} color="#657786" />
+            <TextInput
+              placeholder="Search News"
+              className="flex-1 ml-2 text-base h-full"
+              placeholderTextColor="#657786"
+            />
+          </View>
+
+          {/* Notification */}
+          <TouchableOpacity
+            className="ml-3 p-2 bg-[#F1F3F5] rounded-full"
+            onPress={() => router.push("/notifications")}
+          >
+            <Ionicons name="notifications-outline" size={22} color="#374151" />
+          </TouchableOpacity>
         </View>
+
         {/* Categories */}
         <ScrollView
           horizontal

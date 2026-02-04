@@ -1,10 +1,13 @@
 import { bookmarkApi, useApiClient } from "@/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Alert } from "react-native";
+import { useCurrentUser } from "./useCurrentUser";
 
 export const useBookmarks = () => {
   const api = useApiClient();
   const queryClient = useQueryClient();
+
+  const { currentUser } = useCurrentUser();
 
   const {
     data: bookmarks = [],
@@ -13,8 +16,11 @@ export const useBookmarks = () => {
     refetch,
   } = useQuery({
     queryKey: ["bookmarkNews"],
-    queryFn: () => bookmarkApi.getBookMark(api),
-    select: (response) => response.data.bookMarks,
+    queryFn: async () => {
+      const response = await bookmarkApi.getBookMark(api);
+      return response.data.bookMarks;
+    },
+    enabled: !!currentUser,
   });
 
   const createBookMarkMutation = useMutation({
@@ -27,45 +33,32 @@ export const useBookmarks = () => {
       const previousBookmarks = queryClient.getQueryData(["bookmarkNews"]);
 
       queryClient.setQueryData(["bookmarkNews"], (old: any) => {
-        if (!old?.data?.bookMarks) return old;
-
-        const currentBookmarks = old.data.bookMarks;
+        const currentBookmarks = Array.isArray(old) ? old : [];
         const isBookmarked = currentBookmarks.some(
           (bm: any) => (bm.news?._id || bm.news) === newsId
         );
 
-        let updatedBookmarks;
         if (isBookmarked) {
           // Remove from bookmarks
-          updatedBookmarks = currentBookmarks.filter(
+          return currentBookmarks.filter(
             (bm: any) => (bm.news?._id || bm.news) !== newsId
           );
         } else {
-          // Check if it somehow already exists in the array (extra safety)
-          const alreadyInList = currentBookmarks.some(
-            (bm: any) => (bm.news?._id || bm.news) === newsId
-          );
-          if (alreadyInList) {
-            updatedBookmarks = currentBookmarks;
-          } else {
-            // Add a temporary bookmark object with necessary fields for UI
-            updatedBookmarks = [
-              ...currentBookmarks,
-              {
-                news: {
-                  _id: newsId,
-                  createdAt: new Date().toISOString(),
-                  channelUsername: "Loading...",
-                  content: "Saving bookmark...",
-                  likesCount: 0,
-                  isLiked: false,
-                },
+          // Add a temporary bookmark object
+          return [
+            ...currentBookmarks,
+            {
+              news: {
+                _id: newsId,
+                createdAt: new Date().toISOString(),
+                channelUsername: "Loading...",
+                content: "Saving bookmark...",
+                likesCount: 0,
+                isLiked: false,
               },
-            ];
-          }
+            },
+          ];
         }
-
-        return { ...old, data: { ...old.data, bookMarks: updatedBookmarks } };
       });
 
       return { previousBookmarks };

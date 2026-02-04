@@ -27,9 +27,8 @@ export const useFetchNews = () => {
 
       // Optimistically update the cache
       queryClient.setQueryData(["news"], (old: any) => {
-        if (!old?.data?.news) return old;
-
-        const updatedNews = old.data.news.map((item: any) => {
+        const currentNews = Array.isArray(old) ? old : [];
+        return currentNews.map((item: any) => {
           if (item._id === newsId) {
             const newIsLiked = !item.isLiked;
             const newLikesCount = newIsLiked
@@ -40,8 +39,6 @@ export const useFetchNews = () => {
           }
           return item;
         });
-
-        return { ...old, data: { ...old.data, news: updatedNews } };
       });
 
       return { previousNews };

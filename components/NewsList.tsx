@@ -21,8 +21,8 @@ interface NewsListProps {
 }
 
 const NewsList = ({ category, newsId }: NewsListProps) => {
-  const { currentUser } = useCurrentUser();
-  const { news, isLoading, isError, refetch, toggleLike } =
+  const { currentUser, isLoading: userLoading } = useCurrentUser();
+  const { news, isLoading: newsLoading, isError, refetch, toggleLike } =
     useFetchNews();
   const { saveBookMark, checkIsBookmarked } = useBookmarks();
   const [refreshing, setRefreshing] = useState(false);
@@ -86,7 +86,7 @@ const NewsList = ({ category, newsId }: NewsListProps) => {
     await refetch();
     setRefreshing(false);
   };
-  if (isLoading) {
+  if (userLoading || newsLoading) {
     return (
       <View className="p-8 items-center">
         <ActivityIndicator size="large" color="#1DA1F2" />
