@@ -2,7 +2,6 @@ import {
   View,
   Text,
   ListRenderItem,
-  ActivityIndicator,
   TouchableOpacity,
   FlatList,
   RefreshControl,
@@ -13,6 +12,7 @@ import { NewsItem } from "@/types";
 import { useBookmarks } from "@/hooks/useBookmarks";
 import { BookMarkCards } from "./BookMarkCards";
 import { useRouter } from "expo-router";
+import { BookMarkListSkeleton } from "./NewsItemSkeleton";
 
 const BookMark = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -37,12 +37,7 @@ const BookMark = () => {
   };
 
   if (isLoading) {
-    return (
-      <View className="p-8 items-center">
-        <ActivityIndicator size="large" color="#1DA1F2" />
-        <Text className="text-gray-500 mt-2">Loading bookmark....</Text>
-      </View>
-    );
+    return <BookMarkListSkeleton />;
   }
 
   if (isError) {

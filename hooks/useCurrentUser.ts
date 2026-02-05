@@ -16,7 +16,7 @@ export const useCurrentUser = () => {
     queryKey: ["authUser"],
     queryFn: async () => {
       const response = await userApi.getCurrentUser(api);
-      return response.data.user;
+      return response.data.user ?? null;
     },
     enabled: isLoaded && isSignedIn,
     retry: 3,

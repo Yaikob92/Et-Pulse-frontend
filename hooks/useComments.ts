@@ -52,83 +52,78 @@ export const useComments = () => {
       const currentUserId = currentUser?._id;
       if (!currentUserId) return;
 
-      const queryKeys = [["news"], ["bookmarkNews"]];
-      const previousData = new Map<string, any>();
+      // Cancel outgoing refetches
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: ["news"] }),
+        queryClient.cancelQueries({ queryKey: ["bookmarkNews"] }),
+      ]);
 
-      for (const key of queryKeys) {
-        await queryClient.cancelQueries({ queryKey: key });
-        const data = queryClient.getQueryData(key);
-        if (data) {
-          previousData.set(JSON.stringify(key), data);
+      // Snapshot previous values
+      const previousNews = queryClient.getQueryData(["news"]);
+      const previousBookmarks = queryClient.getQueryData(["bookmarkNews"]);
 
-          queryClient.setQueryData(key, (old: any) => {
-            if (!old) return old;
+      const updateCommentInNews = (newsItems: any[]) => {
+        return newsItems.map((item: any) => {
+          if (!item.comments?.some((c: any) => c._id === commentId)) {
+            return item;
+          }
 
-            let newsItems: any[] = [];
-            let isBookmark = false;
+          return {
+            ...item,
+            comments: item.comments.map((c: any) => {
+              if (c._id === commentId) {
+                const isLiked = (c.likes || []).some(
+                  (id: any) => id.toString() === currentUserId.toString()
+                );
 
-            if (Array.isArray(old)) {
-              // If the data is an array, we determine what it is based on the key
-              if (JSON.stringify(key).includes("news")) {
-                newsItems = old;
-              } else if (JSON.stringify(key).includes("bookmarkNews")) {
-                newsItems = old.map((bm: any) => bm.news).filter(Boolean);
-                isBookmark = true;
+                const newLikes = isLiked
+                  ? (c.likes || []).filter(
+                    (id: any) => id.toString() !== currentUserId.toString()
+                  )
+                  : [...(c.likes || []), currentUserId];
+
+                return { ...c, likes: newLikes };
               }
-            } else {
-              return old;
-            }
+              return c;
+            }),
+          };
+        });
+      };
 
-            const updatedNewsItems = newsItems.map((item: any) => {
-              if (!item.comments?.some((c: any) => c._id === commentId)) {
-                return item;
-              }
-
-              return {
-                ...item,
-                comments: item.comments.map((c: any) => {
-                  if (c._id === commentId) {
-                    const isLiked = c.likes?.some(
-                      (id: any) => id.toString() === currentUserId.toString()
-                    );
-
-                    const newLikes = isLiked
-                      ? (c.likes || []).filter(
-                        (id: any) => id.toString() !== currentUserId.toString()
-                      )
-                      : [...(c.likes || []), currentUserId];
-
-                    return { ...c, likes: newLikes };
-                  }
-                  return c;
-                }),
-              };
-            });
-
-            if (isBookmark) {
-              return old.map((bm: any) => {
-                const updated = updatedNewsItems.find(n => n._id === bm.news?._id);
-                return updated ? { ...bm, news: updated } : bm;
-              });
-            }
-
-            return updatedNewsItems;
-          });
-        }
+      // Optimistically update news cache
+      if (previousNews) {
+        queryClient.setQueryData(["news"], (old: any) => {
+          if (!Array.isArray(old)) return old;
+          return updateCommentInNews(old);
+        });
       }
 
-      return { previousData };
+      // Optimistically update bookmarks cache
+      if (previousBookmarks) {
+        queryClient.setQueryData(["bookmarkNews"], (old: any) => {
+          if (!Array.isArray(old)) return old;
+          return old.map((bm: any) => {
+            if (!bm.news) return bm;
+            const updated = updateCommentInNews([bm.news])[0];
+            return { ...bm, news: updated };
+          });
+        });
+      }
+
+      return { previousNews, previousBookmarks };
     },
     onError: (err: any, commentId, context) => {
       console.error("Like comment error:", err?.response?.data || err.message);
-      if (context?.previousData) {
-        context.previousData.forEach((data, keyStr) => {
-          queryClient.setQueryData(JSON.parse(keyStr), data);
-        });
+      if (context?.previousNews) {
+        queryClient.setQueryData(["news"], context.previousNews);
+      }
+      if (context?.previousBookmarks) {
+        queryClient.setQueryData(["bookmarkNews"], context.previousBookmarks);
       }
       Alert.alert("Error", "Failed to like comment");
     },
     onSettled: () => {
+      // Background refetch to stay in sync
       queryClient.invalidateQueries({ queryKey: ["news"] });
       queryClient.invalidateQueries({ queryKey: ["bookmarkNews"] });
     },

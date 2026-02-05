@@ -48,12 +48,13 @@ const TabsbLayout = () => {
           ),
         }}
       />
+
       <Tabs.Screen
-        name="notifications"
+        name="messages"
         options={{
-          title: "Notifications",
+          title: "Messages",
           tabBarIcon: ({ size, color }) => (
-            <Ionicons name="notifications" size={size} color={color} />
+            <Ionicons name="chatbubble-ellipses" size={size} color={color} />
           ),
         }}
       />

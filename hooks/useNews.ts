@@ -12,8 +12,10 @@ export const useFetchNews = () => {
     refetch,
   } = useQuery({
     queryKey: ["news"],
-    queryFn: () => newsApi.getAllNews(api),
-    select: (response) => response.data.news,
+    queryFn: async () => {
+      const response = await newsApi.getAllNews(api);
+      return response.data.news ?? [];
+    },
   });
 
   const likeNewsMutation = useMutation({

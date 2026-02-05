@@ -3,7 +3,6 @@ import { useFetchNews } from "@/hooks/useNews";
 import { NewsItem } from "@/types";
 import { useCallback, useState, useEffect, useRef } from "react";
 import {
-  ActivityIndicator,
   FlatList,
   ListRenderItem,
   RefreshControl,
@@ -14,6 +13,8 @@ import {
 import { NewsItemCard } from "./NewsItemCard";
 import CommentsModal from "@/components/CommentsModal";
 import { useBookmarks } from "@/hooks/useBookmarks";
+
+import { NewsListSkeleton } from "./NewsItemSkeleton";
 
 interface NewsListProps {
   category?: string;
@@ -87,12 +88,7 @@ const NewsList = ({ category, newsId }: NewsListProps) => {
     setRefreshing(false);
   };
   if (userLoading || newsLoading) {
-    return (
-      <View className="p-8 items-center">
-        <ActivityIndicator size="large" color="#1DA1F2" />
-        <Text className="text-gray-500 mt-2">Loading posts....</Text>
-      </View>
-    );
+    return <NewsListSkeleton />;
   }
 
   if (isError) {

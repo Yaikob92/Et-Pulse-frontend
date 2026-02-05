@@ -18,7 +18,7 @@ export const useBookmarks = () => {
     queryKey: ["bookmarkNews"],
     queryFn: async () => {
       const response = await bookmarkApi.getBookMark(api);
-      return response.data.bookMarks;
+      return response.data.bookMarks ?? [];
     },
     enabled: !!currentUser,
   });
