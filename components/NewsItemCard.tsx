@@ -1,9 +1,9 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
-import { useState } from "react";
-import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
-import { formatDate, formatNumber } from "@/utils/formatter";
-import { NewsItem, User } from "@/types";
 import { useTheme } from "@/context/ThemeContext";
+import { NewsItem, User } from "@/types";
+import { formatDate, formatNumber } from "@/utils/formatter";
+import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 
 type NewsCardProps = {
   item: NewsItem;

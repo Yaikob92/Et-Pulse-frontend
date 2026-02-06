@@ -223,7 +223,7 @@ export default function Profile() {
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
+      <ScrollView showsVerticalScrollIndicator={false} className="flex-1" contentContainerStyle={{ paddingBottom: 120 }}>
         {/* ── Profile Card ── */}
         <View
           className="mx-5 mt-5 bg-white dark:bg-[#1A1D27] rounded-3xl pt-7 items-center"

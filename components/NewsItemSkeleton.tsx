@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { View, Animated } from "react-native";
+import { useTheme } from "@/context/ThemeContext";
 
 const SkeletonItem = ({
     width,
@@ -12,6 +13,7 @@ const SkeletonItem = ({
     borderRadius?: number;
 }) => {
     const opacity = useRef(new Animated.Value(0.3)).current;
+    const { isDark } = useTheme();
 
     useEffect(() => {
         Animated.loop(
@@ -36,7 +38,7 @@ const SkeletonItem = ({
                 width,
                 height,
                 opacity,
-                backgroundColor: "#E5E7EB",
+                backgroundColor: isDark ? "#374151" : "#E5E7EB",
                 borderRadius,
             }}
         />
@@ -45,7 +47,7 @@ const SkeletonItem = ({
 
 export const NewsItemSkeleton = () => {
     return (
-        <View className="bg-white border-b border-gray-400 pb-4 mb-3">
+        <View className="bg-white dark:bg-[#1A1D27] border-b border-gray-400 dark:border-gray-700 pb-4 mb-3">
             {/* Header */}
             <View className="flex-row items-center justify-between px-4 pt-4 mb-3">
                 <View className="flex-row items-center flex-1">
@@ -106,9 +108,9 @@ export const NewsItemSkeleton = () => {
 
 export const BookMarkItemSkeleton = () => {
     return (
-        <View className="bg-white rounded-3xl p-4 mb-4 flex-row items-center shadow-sm">
+        <View className="bg-white dark:bg-[#1A1D27] rounded-3xl p-4 mb-4 flex-row items-center shadow-sm">
             {/* Image Section */}
-            <View className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-100">
+            <View className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-700">
                 <SkeletonItem width="100%" height="100%" borderRadius={0} />
             </View>
 

@@ -34,7 +34,7 @@ export default function Explore() {
                 </View>
             </View>
 
-            <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
+            <ScrollView showsVerticalScrollIndicator={false} className="flex-1" contentContainerStyle={{ paddingBottom: 120 }}>
                 {/* Categories Horizontal */}
                 <ScrollView
                     horizontal

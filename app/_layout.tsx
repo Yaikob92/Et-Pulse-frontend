@@ -1,14 +1,14 @@
 import InitialLayout from "@/components/InitialLayout";
+import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import { ClerkProvider } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
-import { StatusBar as ExpoStatusBar } from "expo-status-bar";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import "../global.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ThemeProvider, useTheme } from "@/context/ThemeContext";
+import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useColorScheme } from "nativewind";
 import { useEffect } from "react";
 import { View } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import "../global.css";
 
 const queryclient = new QueryClient();
 
