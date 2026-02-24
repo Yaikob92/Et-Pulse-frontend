@@ -3,6 +3,7 @@ import { Text, View, TextInput, ScrollView, TouchableOpacity, Alert } from "reac
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { useRouter } from "expo-router";
+import { useTheme } from "@/context/ThemeContext";
 
 const categories = ["All", "Politics", "Sports", "Business", "Tech", "Entertainment"];
 
@@ -10,6 +11,7 @@ export default function Bookmarks() {
     const router = useRouter();
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [showMenu, setShowMenu] = useState(false);
+    const { isDark } = useTheme();
 
     const menuOptions = [
         {
@@ -31,24 +33,24 @@ export default function Bookmarks() {
     ];
 
     return (
-        <View className="flex-1 bg-white">
+        <View className="flex-1 bg-white dark:bg-[#0F1117]">
             {/* Header */}
-            <View className="bg-white px-5 pt-12 pb-4 z-50">
+            <View className="bg-white dark:bg-[#1A1D27] px-5 pt-12 pb-4 z-50">
                 <View className="flex-row items-center justify-between mb-6 relative">
                     <TouchableOpacity onPress={() => router.back()}>
-                        <Ionicons name="chevron-back" size={28} color="#1A1A1A" />
+                        <Ionicons name="chevron-back" size={28} color={isDark ? "#D1D5DB" : "#1A1A1A"} />
                     </TouchableOpacity>
-                    <Text className="text-2xl font-bold text-[#1A1A1A]">Bookmarks</Text>
+                    <Text className="text-2xl font-bold text-[#1A1A1A] dark:text-gray-100">Bookmarks</Text>
 
                     <View>
                         <TouchableOpacity onPress={() => setShowMenu(!showMenu)}>
-                            <Ionicons name="ellipsis-horizontal" size={24} color="#1A1A1A" />
+                            <Ionicons name="ellipsis-horizontal" size={24} color={isDark ? "#D1D5DB" : "#1A1A1A"} />
                         </TouchableOpacity>
 
                         {/* Dropdown Menu */}
                         {showMenu && (
                             <View
-                                className="absolute right-0 top-10 bg-white shadow-2xl shadow-black/20 rounded-2xl border border-gray-100 py-2 w-48 z-[100]"
+                                className="absolute right-0 top-10 bg-white dark:bg-[#252830] shadow-2xl shadow-black/20 rounded-2xl border border-gray-100 dark:border-gray-700 py-2 w-48 z-[100]"
                                 style={{
                                     elevation: 5,
                                     shadowColor: "#000",
@@ -64,14 +66,14 @@ export default function Bookmarks() {
                                             setShowMenu(false);
                                             option.onPress();
                                         }}
-                                        className={`flex-row items-center px-4 py-3 ${idx !== menuOptions.length - 1 ? 'border-b border-gray-50' : ''}`}
+                                        className={`flex-row items-center px-4 py-3 ${idx !== menuOptions.length - 1 ? 'border-b border-gray-50 dark:border-gray-700' : ''}`}
                                     >
                                         <Ionicons
                                             name={option.icon as any}
                                             size={18}
-                                            color={option.isDestructive ? "#EF4444" : "#4B5563"}
+                                            color={option.isDestructive ? "#EF4444" : isDark ? "#D1D5DB" : "#4B5563"}
                                         />
-                                        <Text className={`ml-3 font-medium ${option.isDestructive ? 'text-red-500' : 'text-gray-700'}`}>
+                                        <Text className={`ml-3 font-medium ${option.isDestructive ? 'text-red-500' : 'text-gray-700 dark:text-gray-200'}`}>
                                             {option.label}
                                         </Text>
                                     </TouchableOpacity>
@@ -91,12 +93,12 @@ export default function Bookmarks() {
                 )}
 
                 {/* Search Bar */}
-                <View className="flex-row items-center bg-[#F1F3F5] rounded-full px-4 h-12 mb-6">
-                    <Ionicons name="search-outline" size={20} color="#8E8E93" />
+                <View className="flex-row items-center bg-[#F1F3F5] dark:bg-[#252830] rounded-full px-4 h-12 mb-6">
+                    <Ionicons name="search-outline" size={20} color={isDark ? "#6B7280" : "#8E8E93"} />
                     <TextInput
                         placeholder="Search saved articles"
-                        className="flex-1 ml-3 text-base text-[#1A1A1A]"
-                        placeholderTextColor="#8E8E93"
+                        className="flex-1 ml-3 text-base text-[#1A1A1A] dark:text-gray-100"
+                        placeholderTextColor={isDark ? "#6B7280" : "#8E8E93"}
                     />
                 </View>
 
@@ -109,11 +111,15 @@ export default function Bookmarks() {
                         <TouchableOpacity
                             key={category}
                             onPress={() => setSelectedCategory(category)}
-                            className={`px-4 py-2 rounded-full mr-2 ${selectedCategory === category ? "bg-black" : "bg-gray-100"
+                            className={`px-4 py-2 rounded-full mr-2 ${selectedCategory === category
+                                ? "bg-black dark:bg-blue-600"
+                                : "bg-gray-100 dark:bg-[#252830]"
                                 }`}
                         >
                             <Text
-                                className={`${selectedCategory === category ? "text-white" : "text-black"
+                                className={`${selectedCategory === category
+                                    ? "text-white"
+                                    : "text-black dark:text-gray-300"
                                     } font-medium`}
                             >
                                 {category}
