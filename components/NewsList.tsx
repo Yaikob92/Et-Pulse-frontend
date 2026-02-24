@@ -94,7 +94,7 @@ const NewsList = ({ category, newsId }: NewsListProps) => {
   if (isError) {
     return (
       <View className="p-8 items-center">
-        <Text className="text-gray-500 mb-4">Failed to load posts</Text>
+        <Text className="text-gray-500 dark:text-gray-400 mb-4">Failed to load posts</Text>
         <TouchableOpacity
           className="bg-blue-500 px-4 py-2 rounded-lg"
           onPress={() => refetch()}
@@ -108,7 +108,7 @@ const NewsList = ({ category, newsId }: NewsListProps) => {
   if (news.length === 0) {
     return (
       <View className="p-8 items-center">
-        <Text className="text-gray-500">No posts yet</Text>
+        <Text className="text-gray-500 dark:text-gray-400">No posts yet</Text>
       </View>
     );
   }

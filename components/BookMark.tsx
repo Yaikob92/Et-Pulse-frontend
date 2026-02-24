@@ -43,7 +43,7 @@ const BookMark = () => {
   if (isError) {
     return (
       <View className="p-8 items-center">
-        <Text className="text-gray-500 mb-4">Failed to load bookmarks</Text>
+        <Text className="text-gray-500 dark:text-gray-400 mb-4">Failed to load bookmarks</Text>
         <TouchableOpacity
           className="bg-blue-500 px-4 py-2 rounded-lg"
           onPress={() => refetch()}
@@ -57,13 +57,13 @@ const BookMark = () => {
   if (news.length === 0) {
     return (
       <View className="p-8 items-center">
-        <Text className="text-gray-500">No bookmarks yet</Text>
+        <Text className="text-gray-500 dark:text-gray-400">No bookmarks yet</Text>
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <View className="flex-1 bg-white dark:bg-[#0F1117]">
       <FlatList
         data={news}
         renderItem={renderBookMarks}

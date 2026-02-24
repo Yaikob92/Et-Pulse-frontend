@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { formatDate, formatNumber } from "@/utils/formatter";
 import { NewsItem, User } from "@/types";
+import { useTheme } from "@/context/ThemeContext";
 
 type NewsCardProps = {
   item: NewsItem;
@@ -25,6 +26,7 @@ export const NewsItemCard = ({
 }: NewsCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const CONTENT_LIMIT = 150;
+  const { isDark } = useTheme();
 
   const shouldTruncate = item.content && item.content.length > CONTENT_LIMIT;
   const displayText =
@@ -33,7 +35,7 @@ export const NewsItemCard = ({
       : item.content;
 
   return (
-    <View className="bg-white border-b border-gray-400 pb-4 mb-3">
+    <View className="bg-white dark:bg-[#1A1D27] border-b border-gray-400 dark:border-gray-700 pb-4 mb-3">
       {/* Header */}
       <View className="flex-row items-center justify-between px-4 pt-4 mb-3">
         <View className="flex-row items-center flex-1">
@@ -44,14 +46,14 @@ export const NewsItemCard = ({
               height: 44,
               borderRadius: 22,
               borderWidth: 2,
-              borderColor: "#F3F4F6",
+              borderColor: isDark ? "#374151" : "#F3F4F6",
             }}
           />
           <View className="ml-3 flex-1">
-            <Text className="text-base font-bold text-gray-900">
+            <Text className="text-base font-bold text-gray-900 dark:text-gray-100">
               {item.channelUsername.toUpperCase() ?? ""}
             </Text>
-            <Text className="text-[13px] text-gray-500">
+            <Text className="text-[13px] text-gray-500 dark:text-gray-400">
               {formatDate(item.createdAt)}
             </Text>
           </View>
@@ -59,12 +61,12 @@ export const NewsItemCard = ({
             <Ionicons
               name={isBookmarked ? "bookmark" : "bookmark-outline"}
               size={20}
-              color={isBookmarked ? "#2467f9" : "#6b7280"}
+              color={isBookmarked ? "#2467f9" : isDark ? "#9CA3AF" : "#6b7280"}
             />
           </TouchableOpacity>
           <TouchableOpacity className="flex-row items-center ml-5">
             <Ionicons name="add-outline" size={20} color="#2467f9ff" />
-            <Text className="text-blue-600 text-lg">Follow</Text>
+            <Text className="text-blue-600 dark:text-blue-400 text-lg">Follow</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -72,7 +74,7 @@ export const NewsItemCard = ({
       {/* Content */}
       {item.content && (
         <View className="px-4 mb-3">
-          <Text className="text-gray-800 text-base leading-relaxed">
+          <Text className="text-gray-800 dark:text-gray-200 text-base leading-relaxed">
             {displayText}
           </Text>
           {shouldTruncate && (
@@ -80,7 +82,7 @@ export const NewsItemCard = ({
               onPress={() => setIsExpanded(!isExpanded)}
               className="mt-1"
             >
-              <Text className="text-blue-600 font-semibold">
+              <Text className="text-blue-600 dark:text-blue-400 font-semibold">
                 {isExpanded ? "See Less" : "See More"}
               </Text>
             </TouchableOpacity>
@@ -109,18 +111,18 @@ export const NewsItemCard = ({
             <FontAwesome
               name={item.isLiked ? "thumbs-up" : "thumbs-o-up"}
               size={18}
-              color={item.isLiked ? "#000" : "#657786"}
+              color={item.isLiked ? (isDark ? "#60A5FA" : "#000") : (isDark ? "#9CA3AF" : "#657786")}
             />
             <Text
-              className={`text-sm ml-2 ${item.isLiked ? "text-black-900" : "text-gray-600"}`}
+              className={`text-sm ml-2 ${item.isLiked ? "text-black dark:text-blue-400" : "text-gray-600 dark:text-gray-400"}`}
             >
               {formatNumber(item.likesCount || 0)}
             </Text>
           </View>
           {item.isLiked ? (
-            <Text className="text-sm text-gray-600 mt-1">Liked</Text>
+            <Text className="text-sm text-gray-600 dark:text-gray-400 mt-1">Liked</Text>
           ) : (
-            <Text className={`text-sm mt-1 text-gray-600`}>Like</Text>
+            <Text className={`text-sm mt-1 text-gray-600 dark:text-gray-400`}>Like</Text>
           )}
         </TouchableOpacity>
         <TouchableOpacity
@@ -131,26 +133,26 @@ export const NewsItemCard = ({
             <Ionicons
               name="chatbox-ellipses-outline"
               size={18}
-              color="#657786"
+              color={isDark ? "#9CA3AF" : "#657786"}
             />
-            <Text className="text-gray-500 text-sm ml-2">
+            <Text className="text-gray-500 dark:text-gray-400 text-sm ml-2">
               {formatNumber(item.comments?.length || 0)}
             </Text>
           </View>
-          <Text className="text-sm text-gray-600 mt-1">Comment</Text>
+          <Text className="text-sm text-gray-600 dark:text-gray-400 mt-1">Comment</Text>
         </TouchableOpacity>
 
         <TouchableOpacity className="flex-col items-center">
           <View className="flex-row items-center">
-            <Feather name="repeat" size={18} color="#657786" />
-            <Text className="text-gray-500 text-sm ml-2">0</Text>
+            <Feather name="repeat" size={18} color={isDark ? "#9CA3AF" : "#657786"} />
+            <Text className="text-gray-500 dark:text-gray-400 text-sm ml-2">0</Text>
           </View>
-          <Text className="text-sm text-gray-600 mt-1">Repost</Text>
+          <Text className="text-sm text-gray-600 dark:text-gray-400 mt-1">Repost</Text>
         </TouchableOpacity>
 
         <TouchableOpacity className="flex-col items-center">
-          <Feather name="send" size={18} color="#657786" />
-          <Text className="text-sm text-gray-600 mt-1">Share</Text>
+          <Feather name="send" size={18} color={isDark ? "#9CA3AF" : "#657786"} />
+          <Text className="text-sm text-gray-600 dark:text-gray-400 mt-1">Share</Text>
         </TouchableOpacity>
       </View>
     </View>
