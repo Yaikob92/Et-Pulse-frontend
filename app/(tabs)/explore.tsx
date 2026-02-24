@@ -2,7 +2,7 @@ import { Text, View, TextInput, ScrollView, TouchableOpacity, Image } from "reac
 import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { COLORS } from "@/constants/theme";
+import { useTheme } from "@/context/ThemeContext";
 
 const trendingTopics = [
     { id: "1", title: "#EthiopiaEconomy", posts: "12.4K news" },
@@ -16,19 +16,20 @@ const categories = ["Trending", "Politics", "Sports", "Business", "Tech", "Life 
 export default function Explore() {
     const [selectedCategory, setSelectedCategory] = useState("Trending");
     const [searchQuery, setSearchQuery] = useState("");
+    const { isDark } = useTheme();
 
     return (
-        <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
+        <SafeAreaView className="flex-1 bg-white dark:bg-[#0F1117]" edges={["top"]}>
             {/* Search Header */}
             <View className="px-6 py-4">
-                <View className="flex-row items-center bg-gray-100 rounded-2xl px-4 h-12">
-                    <Feather name="search" size={20} color={COLORS.grey} />
+                <View className="flex-row items-center bg-gray-100 dark:bg-[#252830] rounded-2xl px-4 h-12">
+                    <Feather name="search" size={20} color={isDark ? "#9CA3AF" : "#9CA3AF"} />
                     <TextInput
                         placeholder="Search news, topics, or channels"
                         value={searchQuery}
                         onChangeText={setSearchQuery}
-                        className="flex-1 ml-3 text-base text-gray-900"
-                        placeholderTextColor={COLORS.grey}
+                        className="flex-1 ml-3 text-base text-gray-900 dark:text-gray-100"
+                        placeholderTextColor={isDark ? "#6B7280" : "#9CA3AF"}
                     />
                 </View>
             </View>
@@ -45,9 +46,15 @@ export default function Explore() {
                         <TouchableOpacity
                             key={category}
                             onPress={() => setSelectedCategory(category)}
-                            className={`px-6 py-2 rounded-full mr-2 ${selectedCategory === category ? "bg-black" : "bg-gray-100"}`}
+                            className={`px-6 py-2 rounded-full mr-2 ${selectedCategory === category
+                                ? "bg-black dark:bg-blue-600"
+                                : "bg-gray-100 dark:bg-[#252830]"
+                                }`}
                         >
-                            <Text className={`${selectedCategory === category ? "text-white" : "text-gray-600"} font-semibold`}>
+                            <Text className={`${selectedCategory === category
+                                ? "text-white"
+                                : "text-gray-600 dark:text-gray-300"
+                                } font-semibold`}>
                                 {category}
                             </Text>
                         </TouchableOpacity>
@@ -76,17 +83,17 @@ export default function Explore() {
                 {/* Trending Section */}
                 <View className="px-6">
                     <View className="flex-row items-center justify-between mb-4">
-                        <Text className="text-xl font-bold text-gray-900">Trending for you</Text>
+                        <Text className="text-xl font-bold text-gray-900 dark:text-gray-100">Trending for you</Text>
                         <TouchableOpacity>
-                            <Text className="text-blue-600 font-semibold">See all</Text>
+                            <Text className="text-blue-600 dark:text-blue-400 font-semibold">See all</Text>
                         </TouchableOpacity>
                     </View>
 
                     {trendingTopics.map((topic) => (
-                        <TouchableOpacity key={topic.id} className="flex-row items-center justify-between py-4 border-b border-gray-50">
+                        <TouchableOpacity key={topic.id} className="flex-row items-center justify-between py-4 border-b border-gray-50 dark:border-gray-800">
                             <View>
-                                <Text className="text-[17px] font-bold text-gray-900 mb-1">{topic.title}</Text>
-                                <Text className="text-sm text-gray-500">{topic.posts} posts</Text>
+                                <Text className="text-[17px] font-bold text-gray-900 dark:text-gray-100 mb-1">{topic.title}</Text>
+                                <Text className="text-sm text-gray-500 dark:text-gray-400">{topic.posts} posts</Text>
                             </View>
                             <Ionicons name="trending-up" size={20} color="#10B981" />
                         </TouchableOpacity>
@@ -95,19 +102,19 @@ export default function Explore() {
 
                 {/* Suggested Channels */}
                 <View className="px-6 mt-8 mb-10">
-                    <Text className="text-xl font-bold text-gray-900 mb-4">Discover Channels</Text>
+                    <Text className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Discover Channels</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-2">
                         {[1, 2, 3].map((i) => (
-                            <View key={i} className="bg-gray-50 rounded-2xl p-4 w-40 mr-4 items-center">
-                                <View className="w-16 h-16 rounded-full bg-gray-200 mb-3 overflow-hidden">
+                            <View key={i} className="bg-gray-50 dark:bg-[#1A1D27] rounded-2xl p-4 w-40 mr-4 items-center">
+                                <View className="w-16 h-16 rounded-full bg-gray-200 dark:bg-gray-700 mb-3 overflow-hidden">
                                     <Image
                                         source={{ uri: `https://ui-avatars.com/api/?name=Channel+${i}&background=random` }}
                                         className="w-full h-full"
                                     />
                                 </View>
-                                <Text className="font-bold text-gray-900 text-center" numberOfLines={1}>News Channel {i}</Text>
-                                <Text className="text-xs text-gray-500 mb-3">12.5K Followers</Text>
-                                <TouchableOpacity className="bg-black px-4 py-1.5 rounded-full w-full">
+                                <Text className="font-bold text-gray-900 dark:text-gray-100 text-center" numberOfLines={1}>News Channel {i}</Text>
+                                <Text className="text-xs text-gray-500 dark:text-gray-400 mb-3">12.5K Followers</Text>
+                                <TouchableOpacity className="bg-black dark:bg-blue-600 px-4 py-1.5 rounded-full w-full">
                                     <Text className="text-white text-xs font-bold text-center">Follow</Text>
                                 </TouchableOpacity>
                             </View>

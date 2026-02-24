@@ -1,21 +1,24 @@
-import { COLORS } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
+import { useTheme } from "@/context/ThemeContext";
 
-const TabsbLayout = () => {
+const TabsLayout = () => {
+  const { isDark } = useTheme();
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#000",
-        tabBarInactiveTintColor: COLORS.grey,
+        tabBarActiveTintColor: isDark ? "#60A5FA" : "#000",
+        tabBarInactiveTintColor: isDark ? "#6B7280" : "#9CA3AF",
         tabBarStyle: {
           position: "absolute",
           borderTopWidth: 0,
           elevation: 0,
           height: 60,
           paddingTop: 10,
+          backgroundColor: isDark ? "#1A1D27" : "#FFFFFF",
         },
       }}
     >
@@ -72,4 +75,4 @@ const TabsbLayout = () => {
   );
 };
 
-export default TabsbLayout;
+export default TabsLayout;

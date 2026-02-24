@@ -1,9 +1,17 @@
-
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, ActivityIndicator } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
-import { useResetPassword } from '../../hooks/useResetPassword';
+import React from "react";
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    Image,
+    ScrollView,
+    ActivityIndicator,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { Link } from "expo-router";
+import { useResetPassword } from "../../hooks/useResetPassword";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function ResetPassword() {
     const {
@@ -23,142 +31,119 @@ export default function ResetPassword() {
         onResetPassword,
     } = useResetPassword();
 
-    return (
-        <View style={{ flex: 1, backgroundColor: "#f3f4f7" }}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 16 }}>
-                <View style={{ width: "100%", maxWidth: 400, alignSelf: "center", position: "relative" }}>
+    const { isDark } = useTheme();
 
+    return (
+        <View className="flex-1 bg-gray-50 dark:bg-[#0F1117]">
+            <ScrollView
+                contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 16 }}
+                showsVerticalScrollIndicator={false}
+            >
+                <View className="w-full max-w-[400px] self-center relative">
                     {/* Logo */}
-                    <View style={{
-                        position: "absolute",
-                        top: -40,
-                        left: "50%",
-                        transform: [{ translateX: -32 }],
-                        zIndex: 10
-                    }}>
-                        <View style={{
-                            backgroundColor: "#fff",
-                            padding: 8,
-                            borderRadius: 999,
-                            shadowColor: "#000",
-                            shadowOpacity: 0.2,
-                            shadowRadius: 10
-                        }}>
+                    <View
+                        className="absolute -top-10 left-1/2 -ml-8 z-10"
+                        style={{ transform: [{ translateX: 0 }] }}
+                    >
+                        <View className="bg-white dark:bg-[#1A1D27] p-2 rounded-full shadow-lg">
                             <Image
                                 // source={require("../../assets/images/logo-abbr.png")}
-                                style={{ width: 64, height: 64, borderRadius: 32 }}
+                                className="w-16 h-16 rounded-full"
                             />
                         </View>
                     </View>
 
-                    <View style={{
-                        backgroundColor: "#fff",
-                        borderRadius: 24,
-                        padding: 32,
-                        paddingTop: 48,
-                        shadowColor: "#000",
-                        shadowOpacity: 0.15,
-                        shadowRadius: 20
-                    }}>
-                        <Text style={{ fontSize: 28, fontWeight: "bold", color: "#1a2b4b" }}>
+                    <View className="bg-white dark:bg-[#1A1D27] rounded-3xl p-8 pt-12 shadow-sm border border-gray-100 dark:border-gray-800">
+                        <Text className="text-2xl font-bold text-[#1a2b4b] dark:text-gray-100">
                             {step === "request" ? "Reset" : "Reset Password"}
                         </Text>
 
-                        <Text style={{ fontSize: 16, fontWeight: "600", marginTop: 8, color: "#1a2b4b" }}>
+                        <Text className="text-[#1a2b4b] dark:text-gray-200 text-base font-semibold mt-2">
                             {step === "request"
                                 ? "Reset to your username"
                                 : "Enter your reset code and new password"}
                         </Text>
 
-                        <Text style={{ fontSize: 12, color: "#64748b", marginTop: 8, marginBottom: 24 }}>
+                        <Text className="text-gray-500 dark:text-gray-400 text-xs mt-2 mb-6">
                             {step === "request"
-                                ? "Enter your email and a reset link will sent to you, let's access our the best recommendation for you."
+                                ? "Enter your email and a reset link will be sent to you. Let's get you back to the best news."
                                 : "Please check your email for the reset code."}
                         </Text>
 
                         {error ? (
-                            <View style={{ backgroundColor: '#fef2f2', padding: 12, borderRadius: 8, marginBottom: 16, borderWidth: 1, borderColor: '#fee2e2' }}>
-                                <Text style={{ color: '#dc2626', fontSize: 12, textAlign: 'center', fontWeight: '500' }}>{error}</Text>
+                            <View className="bg-red-50 dark:bg-red-900/20 p-3 rounded-xl mb-4 border border-red-100 dark:border-red-900/30">
+                                <Text className="text-red-600 dark:text-red-400 text-xs text-center font-medium">
+                                    {error}
+                                </Text>
                             </View>
                         ) : null}
 
                         {step === "request" && (
-                            <View style={{ marginBottom: 24 }}>
-                                <View style={{ position: 'absolute', left: 12, top: 16, zIndex: 1 }}>
-                                    <Ionicons name="mail-outline" size={18} color="#94a3b8" />
+                            <View className="mb-6 relative">
+                                <View className="absolute left-4 top-4 z-10">
+                                    <Ionicons
+                                        name="mail-outline"
+                                        size={20}
+                                        color={isDark ? "#6B7280" : "#94a3b8"}
+                                    />
                                 </View>
                                 <TextInput
                                     placeholder="Email"
+                                    placeholderTextColor={isDark ? "#6B7280" : "#94a3b8"}
                                     value={email}
                                     onChangeText={setEmail}
                                     keyboardType="email-address"
                                     autoCapitalize="none"
-                                    style={{
-                                        borderWidth: 1,
-                                        borderColor: "#e2e8f0",
-                                        borderRadius: 16,
-                                        padding: 14,
-                                        paddingLeft: 40,
-                                        fontSize: 14
-                                    }}
+                                    className="border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#252830] rounded-2xl p-4 pl-12 text-sm text-gray-900 dark:text-gray-100"
                                 />
                             </View>
                         )}
 
                         {step === "reset" && (
                             <>
-                                <View style={{ marginBottom: 16 }}>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8, paddingHorizontal: 4 }}>
-                                        <Text style={{ fontSize: 12, color: "#64748b" }}>Reset Code</Text>
+                                <View className="mb-4">
+                                    <View className="flex-row justify-between mb-2 px-1">
+                                        <Text className="text-xs text-gray-500 dark:text-gray-400 font-medium">Reset Code</Text>
                                         {timeLeft !== null && timeLeft > 0 ? (
-                                            <Text style={{ fontSize: 12, color: timeLeft < 60 ? "#dc2626" : "#3b59df", fontWeight: "600" }}>
-                                                Expires in: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+                                            <Text
+                                                className={`text-xs font-bold ${timeLeft < 60 ? "text-red-500" : "text-blue-600 dark:text-blue-400"
+                                                    }`}
+                                            >
+                                                Expires in: {Math.floor(timeLeft / 60)}:
+                                                {(timeLeft % 60).toString().padStart(2, "0")}
                                             </Text>
                                         ) : (
-                                            <Text style={{ fontSize: 12, color: "#dc2626", fontWeight: "600" }}>Code expired</Text>
+                                            <Text className="text-xs text-red-500 font-bold">Code expired</Text>
                                         )}
                                     </View>
                                     <TextInput
                                         placeholder="Reset Code"
+                                        placeholderTextColor={isDark ? "#6B7280" : "#94a3b8"}
                                         value={code}
                                         onChangeText={setCode}
-                                        style={{
-                                            borderWidth: 1,
-                                            borderColor: "#e2e8f0",
-                                            borderRadius: 16,
-                                            padding: 14,
-                                            fontSize: 14
-                                        }}
+                                        className="border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#252830] rounded-2xl p-4 text-sm text-gray-900 dark:text-gray-100"
                                     />
                                 </View>
-                                <View style={{ marginBottom: 16 }}>
+
+                                <View className="mb-4">
                                     <TextInput
                                         placeholder="New Password"
+                                        placeholderTextColor={isDark ? "#6B7280" : "#94a3b8"}
                                         value={password}
                                         onChangeText={setPassword}
                                         secureTextEntry
-                                        style={{
-                                            borderWidth: 1,
-                                            borderColor: "#e2e8f0",
-                                            borderRadius: 16,
-                                            padding: 14,
-                                            fontSize: 14
-                                        }}
+                                        className="border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#252830] rounded-2xl p-4 text-sm text-gray-900 dark:text-gray-100"
                                     />
                                 </View>
-                                <View style={{ marginBottom: 24 }}>
+
+                                <View className="mb-6">
                                     <TextInput
                                         placeholder="Confirm Password"
+                                        placeholderTextColor={isDark ? "#6B7280" : "#94a3b8"}
                                         value={confirmPassword}
                                         onChangeText={setConfirmPassword}
                                         secureTextEntry
-                                        style={{
-                                            borderWidth: 1,
-                                            borderColor: "#e2e8f0",
-                                            borderRadius: 16,
-                                            padding: 14,
-                                            fontSize: 14
-                                        }}
+                                        className="border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#252830] rounded-2xl p-4 text-sm text-gray-900 dark:text-gray-100"
                                     />
                                 </View>
                             </>
@@ -167,36 +152,29 @@ export default function ResetPassword() {
                         <TouchableOpacity
                             onPress={step === "request" ? onRequestReset : onResetPassword}
                             disabled={loading || (step === "reset" && timeLeft === 0)}
-                            style={{
-                                backgroundColor: (loading || (step === "reset" && timeLeft === 0)) ? "#94a3b8" : "#3b59df",
-                                padding: 16,
-                                borderRadius: 16,
-                                alignItems: "center",
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                                gap: 8,
-                                shadowColor: "#3b59df",
-                                shadowOpacity: 0.2,
-                                shadowRadius: 10,
-                                elevation: 5
-                            }}>
-                            {loading ? <ActivityIndicator color="#fff" /> : (
-                                <>
-                                    <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 12, letterSpacing: 1 }}>
-                                        {step === "request" ? "RESET NOW" : "SAVE NEW PASSWORD"}
-                                    </Text>
-                                </>
+                            className={`p-4 rounded-2xl items-center flex-row justify-center gap-2 shadow-lg ${loading || (step === "reset" && timeLeft === 0)
+                                ? "bg-gray-400"
+                                : "bg-blue-600"
+                                }`}
+                        >
+                            {loading ? (
+                                <ActivityIndicator color="#fff" />
+                            ) : (
+                                <Text className="text-white font-bold text-xs tracking-widest uppercase">
+                                    {step === "request" ? "RESET NOW" : "SAVE NEW PASSWORD"}
+                                </Text>
                             )}
                         </TouchableOpacity>
 
-                        <View style={{ marginTop: 32, paddingTop: 32, borderTopWidth: 1, borderTopColor: '#f1f5f9', alignItems: 'center' }}>
+                        <View className="mt-8 pt-8 border-t border-gray-100 dark:border-gray-800 items-center">
                             <Link href="/(auth)/login" asChild>
                                 <TouchableOpacity>
-                                    <Text style={{ color: "#3b59df", fontWeight: "bold", fontSize: 14 }}>Back to Login</Text>
+                                    <Text className="text-blue-600 dark:text-blue-400 font-bold text-sm">
+                                        Back to Login
+                                    </Text>
                                 </TouchableOpacity>
                             </Link>
                         </View>
-
                     </View>
                 </View>
             </ScrollView>
