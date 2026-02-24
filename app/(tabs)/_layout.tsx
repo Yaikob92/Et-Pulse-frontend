@@ -30,11 +30,11 @@ const TabsbLayout = () => {
       />
 
       <Tabs.Screen
-        name="bookmarks"
+        name="explore"
         options={{
-          title: "Bookmarks",
+          title: "Explore",
           tabBarIcon: ({ size, color }) => (
-            <Ionicons name="bookmark" size={size} color={color} />
+            <Ionicons name="compass" size={size} color={color} />
           ),
         }}
       />
