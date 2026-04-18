@@ -150,6 +150,20 @@ export const NewsItemCard = ({
           <Text className="text-sm text-gray-600 dark:text-gray-400 mt-1">Repost</Text>
         </TouchableOpacity>
 
+        <View className="flex-col items-center">
+          <View className="flex-row items-center">
+            <Ionicons
+              name="eye-outline"
+              size={18}
+              color={isDark ? "#9CA3AF" : "#657786"}
+            />
+            <Text className="text-gray-500 dark:text-gray-400 text-sm ml-2">
+              {formatNumber(item.views || 0)}
+            </Text>
+          </View>
+          <Text className="text-sm text-gray-600 dark:text-gray-400 mt-1">Views</Text>
+        </View>
+
         <TouchableOpacity className="flex-col items-center">
           <Feather name="send" size={18} color={isDark ? "#9CA3AF" : "#657786"} />
           <Text className="text-sm text-gray-600 dark:text-gray-400 mt-1">Share</Text>

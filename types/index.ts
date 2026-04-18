@@ -14,6 +14,7 @@ export interface NewsItem {
   content?: string;
   mediaUrl?: string;
   likesCount: number;
+  views: number;
   isLiked: boolean;
   comments?: CommentType[];
 }
