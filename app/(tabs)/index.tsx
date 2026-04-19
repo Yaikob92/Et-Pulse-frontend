@@ -15,6 +15,7 @@ export default function HomeScreen() {
   const { isDark } = useTheme();
 
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
   const { newsId } = useLocalSearchParams<{ newsId: string }>();
   useUserSync();
 
@@ -41,6 +42,8 @@ export default function HomeScreen() {
             <Feather name="search" size={20} color={isDark ? "#9CA3AF" : "#657786"} />
             <TextInput
               placeholder="Search News"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
               className="flex-1 ml-2 text-base h-full text-gray-900 dark:text-gray-100"
               placeholderTextColor={isDark ? "#6B7280" : "#657786"}
             />
@@ -84,7 +87,7 @@ export default function HomeScreen() {
       </View>
 
       {/* News List */}
-      <NewsList category={selectedCategory} newsId={newsId} />
+      <NewsList category={selectedCategory} newsId={newsId} search={searchQuery} />
     </View>
   );
 }

@@ -2,7 +2,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { NewsItem, User } from "@/types";
 import { formatDate, formatNumber } from "@/utils/formatter";
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import React, { memo, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 type NewsCardProps = {
@@ -15,7 +15,7 @@ type NewsCardProps = {
   isBookmarked: boolean;
 };
 
-export const NewsItemCard = ({
+export const NewsItemCard = memo(({
   item,
   onLike,
   isLiked,
@@ -51,10 +51,10 @@ export const NewsItemCard = ({
           />
           <View className="ml-3 flex-1">
             <Text className="text-base font-bold text-gray-900 dark:text-gray-100">
-              {item.channelUsername.toUpperCase() ?? ""}
+              {(item.channelUsername || item.channelName || "").toUpperCase()}
             </Text>
             <Text className="text-[13px] text-gray-500 dark:text-gray-400">
-              {formatDate(item.createdAt)}
+              {formatDate(item.publishedAt || item.createdAt)}
             </Text>
           </View>
           <TouchableOpacity onPress={() => onBookmark(item._id)}>
@@ -171,4 +171,4 @@ export const NewsItemCard = ({
       </View>
     </View>
   );
-};
+});

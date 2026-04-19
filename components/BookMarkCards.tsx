@@ -58,7 +58,7 @@ export const BookMarkCards = ({ item, onRemove, onPress }: BookMarkProps) => {
 
         <View className="flex-row items-center">
           <Text className="text-[#00B4FF] text-[11px] font-bold">
-            ET-PULSE {item.channelUsername.toUpperCase()}
+            ET-PULSE {(item.channelUsername || "").toUpperCase()}
           </Text>
           <View className="w-1 h-1 rounded-full bg-[#8E8E93] mx-2" />
           <Text className="text-[#8E8E93] dark:text-gray-500 text-[11px] font-medium">

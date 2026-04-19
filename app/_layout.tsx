@@ -19,11 +19,6 @@ const queryclient = new QueryClient();
  */
 function ThemedApp() {
   const { isDark } = useTheme();
-  const { setColorScheme } = useColorScheme();
-
-  useEffect(() => {
-    setColorScheme(isDark ? "dark" : "light");
-  }, [isDark]);
 
   return (
     <View className="flex-1 bg-white dark:bg-[#0F1117]">
