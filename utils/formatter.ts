@@ -11,8 +11,12 @@ export const formatNumber = (num: number): string => {
 };
 
 //  Format a date to a short relative format (e.g., 2m, 1h, 3d)
-export const formatDate = (dateString: string): string => {
+export const formatDate = (dateString: string | Date | undefined): string => {
+  if (!dateString) return "now";
+  
   const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "now";
+  
   const now = new Date();
 
   const minutes = differenceInMinutes(now, date);

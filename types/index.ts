@@ -8,14 +8,44 @@ export interface User {
 
 export interface NewsItem {
   _id: string;
-  channelProfilePic: string;
+  telegramId?: string;
+  sourceUrl?: string;
+
+  // Channel info
+  channelName?: string;
   channelUsername: string;
-  createdAt: string;
+  channelProfilePic: string;
+
+  // Content
   content?: string;
+  title?: string;
+  summary?: string;
+
+  // Media
   mediaUrl?: string;
-  likesCount: number;
+  videoUrl?: string;
+  coverImage?: string;
+
+  // Categorization
+  category?: string;
+  tags?: string[];
+  language?: string;
+
+  // Engagement
   views: number;
+  likesCount: number;
+  commentsCount: number;
+  forwards: number;
   isLiked: boolean;
+
+  // Source
+  source?: 'telegram' | 'cms';
+
+  // Dates
+  createdAt: string;
+  publishedAt?: string;
+
+  // Relations
   comments?: CommentType[];
 }
 
@@ -29,4 +59,11 @@ export interface CommentType {
   likes: string[];
   parentComment?: string;
   createdAt: string;
+}
+
+export interface PaginatedResponse<T> {
+  news: T[];
+  currentPage: number;
+  totalPages: number;
+  totalNews: number;
 }

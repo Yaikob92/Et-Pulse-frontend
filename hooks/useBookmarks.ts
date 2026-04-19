@@ -29,49 +29,38 @@ export const useBookmarks = () => {
       return response.data;
     },
     onMutate: async ({ newsId }) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: ["bookmarkNews"] });
+      await queryClient.cancelQueries({ queryKey: ["news"] });
+
       const previousBookmarks = queryClient.getQueryData(["bookmarkNews"]);
 
+      // Update Bookmark Cache
       queryClient.setQueryData(["bookmarkNews"], (old: any) => {
         const currentBookmarks = Array.isArray(old) ? old : [];
-        const isBookmarked = currentBookmarks.some(
+        const isCurrentlyBookmarked = currentBookmarks.some(
           (bm: any) => (bm.news?._id || bm.news) === newsId
         );
 
-        if (isBookmarked) {
-          // Remove from bookmarks
-          return currentBookmarks.filter(
-            (bm: any) => (bm.news?._id || bm.news) !== newsId
-          );
+        if (isCurrentlyBookmarked) {
+          return currentBookmarks.filter((bm: any) => (bm.news?._id || bm.news) !== newsId);
         } else {
-          // Add a temporary bookmark object
-          return [
-            ...currentBookmarks,
-            {
-              news: {
-                _id: newsId,
-                createdAt: new Date().toISOString(),
-                channelUsername: "Loading...",
-                content: "Saving bookmark...",
-                likesCount: 0,
-                isLiked: false,
-              },
-            },
-          ];
+          // Add a temporary shallow bookmark object
+          return [...currentBookmarks, { news: newsId, createdAt: new Date().toISOString() }];
         }
       });
 
       return { previousBookmarks };
     },
     onSuccess: () => {
+      // Only invalidate bookmarks to sync with server, leave main news alone to avoid flicker
       queryClient.invalidateQueries({ queryKey: ["bookmarkNews"] });
-      queryClient.invalidateQueries({ queryKey: ["news"] });
     },
     onError: (error, variables, context) => {
       if (context?.previousBookmarks) {
         queryClient.setQueryData(["bookmarkNews"], context.previousBookmarks);
       }
-      Alert.alert("error", "Failed to bookMark news");
+      console.warn("Bookmark toggle failed:", error);
     },
   });
 
