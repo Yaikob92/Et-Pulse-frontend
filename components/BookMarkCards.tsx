@@ -22,6 +22,11 @@ export const BookMarkCards = ({ item, onRemove, onPress }: BookMarkProps) => {
       .replace("ABOUT ", "")
     : "JUST NOW";
 
+  const channel = typeof item.channel_id === "object" ? item.channel_id : null;
+  const channelUsername = channel?.username || "";
+  const channelProfilePic = channel?.profile_pic || "https://ui-avatars.com/api/?name=Channel&background=0D8ABC&color=fff";
+  const mediaUrl = item.media?.[0]?.url || channelProfilePic;
+
   return (
     <TouchableOpacity
       activeOpacity={0.7}
@@ -31,7 +36,7 @@ export const BookMarkCards = ({ item, onRemove, onPress }: BookMarkProps) => {
       {/* Image Section */}
       <View className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-700">
         <Image
-          source={{ uri: item.mediaUrl || item.channelProfilePic }}
+          source={{ uri: mediaUrl }}
           className="w-full h-full"
           resizeMode="cover"
         />
@@ -58,7 +63,7 @@ export const BookMarkCards = ({ item, onRemove, onPress }: BookMarkProps) => {
 
         <View className="flex-row items-center">
           <Text className="text-[#00B4FF] text-[11px] font-bold">
-            ET-PULSE {(item.channelUsername || "").toUpperCase()}
+            ET-PULSE {(channelUsername || "").toUpperCase()}
           </Text>
           <View className="w-1 h-1 rounded-full bg-[#8E8E93] mx-2" />
           <Text className="text-[#8E8E93] dark:text-gray-500 text-[11px] font-medium">

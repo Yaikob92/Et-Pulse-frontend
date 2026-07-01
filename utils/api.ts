@@ -1,7 +1,24 @@
 import { useAuth } from "@clerk/clerk-expo";
 import axios, { Axios, AxiosInstance } from "axios";
 
-const API_BASE_URL = "http://10.96.137.43:5000/api";
+import Constants from "expo-constants";
+
+// Dynamically get Metro host IP for local development (supports physical devices & emulators)
+const getDevBackendUrl = () => {
+  const hostUri = Constants.expoConfig?.hostUri;
+  const host = hostUri ? hostUri.split(":")[0] : "localhost";
+  return `http://${host}:5000/api`;
+};
+
+const API_BASE_URL = 
+  process.env.EXPO_PUBLIC_API_URL && 
+  process.env.EXPO_PUBLIC_API_URL.trim() !== "" &&
+  !process.env.EXPO_PUBLIC_API_URL.includes("localhost") && 
+  !process.env.EXPO_PUBLIC_API_URL.includes("127.0.0.1")
+    ? process.env.EXPO_PUBLIC_API_URL
+    : getDevBackendUrl();
+
+console.log("🌐 [API] Base URL configured to:", API_BASE_URL);
 
 // this will basically create an authenticated api, pass the token into our headers
 export const createApiClient = (

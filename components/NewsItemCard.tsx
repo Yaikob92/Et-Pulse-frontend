@@ -28,6 +28,11 @@ export const NewsItemCard = memo(({
   const CONTENT_LIMIT = 150;
   const { isDark } = useTheme();
 
+  const channel = typeof item.channel_id === "object" ? item.channel_id : null;
+  const channelName = channel?.name || "";
+  const channelUsername = channel?.username || "";
+  const channelProfilePic = channel?.profile_pic || "https://ui-avatars.com/api/?name=Channel&background=0D8ABC&color=fff";
+
   const shouldTruncate = item.content && item.content.length > CONTENT_LIMIT;
   const displayText =
     shouldTruncate && !isExpanded
@@ -40,7 +45,7 @@ export const NewsItemCard = memo(({
       <View className="flex-row items-center justify-between px-4 pt-4 mb-3">
         <View className="flex-row items-center flex-1">
           <Image
-            source={{ uri: item.channelProfilePic }}
+            source={{ uri: channelProfilePic }}
             style={{
               width: 44,
               height: 44,
@@ -51,10 +56,10 @@ export const NewsItemCard = memo(({
           />
           <View className="ml-3 flex-1">
             <Text className="text-base font-bold text-gray-900 dark:text-gray-100">
-              {(item.channelUsername || item.channelName || "").toUpperCase()}
+              {(channelUsername || channelName || "").toUpperCase()}
             </Text>
             <Text className="text-[13px] text-gray-500 dark:text-gray-400">
-              {formatDate(item.publishedAt || item.createdAt)}
+              {formatDate(item.published_at || item.createdAt)}
             </Text>
           </View>
           <TouchableOpacity onPress={() => onBookmark(item._id)}>
@@ -91,9 +96,9 @@ export const NewsItemCard = memo(({
       )}
 
       {/* Media */}
-      {item.mediaUrl && (
+      {item.media && item.media.length > 0 && (
         <Image
-          source={{ uri: item.mediaUrl }}
+          source={{ uri: item.media[0].url }}
           style={{ width: "100%", height: 256 }}
         />
       )}
@@ -158,7 +163,7 @@ export const NewsItemCard = memo(({
               color={isDark ? "#9CA3AF" : "#657786"}
             />
             <Text className="text-gray-500 dark:text-gray-400 text-sm ml-2">
-              {formatNumber(item.views || 0)}
+              {formatNumber(item.engagement?.views || 0)}
             </Text>
           </View>
           <Text className="text-sm text-gray-600 dark:text-gray-400 mt-1">Views</Text>

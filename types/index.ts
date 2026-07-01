@@ -6,44 +6,61 @@ export interface User {
   profilePicture?: string;
 }
 
+export interface Channel {
+  _id: string;
+  telegram_channel_id: number;
+  name: string;
+  username: string;
+  profile_pic?: string;
+  description?: string;
+  subscribers_count: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface NewsItem {
   _id: string;
-  telegramId?: string;
-  sourceUrl?: string;
-
-  // Channel info
-  channelName?: string;
-  channelUsername: string;
-  channelProfilePic: string;
+  telegram_channel_id?: number;
+  telegram_message_id?: number;
+  channel_id?: Channel | string; // Reference to populated Channel
 
   // Content
-  content?: string;
   title?: string;
-  summary?: string;
-
-  // Media
-  mediaUrl?: string;
-  videoUrl?: string;
-  coverImage?: string;
+  content: string;
+  raw_text?: string;
 
   // Categorization
   category?: string;
   tags?: string[];
   language?: string;
 
-  // Engagement
-  views: number;
+  // Nested structures
+  engagement?: {
+    views: number;
+    forwards: number;
+  };
+  media?: {
+    type: 'image' | 'video' | 'document';
+    url: string;
+  }[];
+  source?: {
+    platform: string;
+    url?: string;
+  };
+
+  status: 'published' | 'draft' | 'deleted' | 'pending' | 'rejected';
+
+  // Cached counters and UI status
   likesCount: number;
   commentsCount: number;
-  forwards: number;
+  bookmarksCount: number;
   isLiked: boolean;
 
-  // Source
-  source?: 'telegram' | 'cms';
-
   // Dates
+  published_at?: string;
+  scraped_at?: string;
   createdAt: string;
-  publishedAt?: string;
+  updatedAt: string;
 
   // Relations
   comments?: CommentType[];
