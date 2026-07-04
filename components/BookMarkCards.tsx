@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { memo } from "react";
 import { NewsItem } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { formatDistanceToNow } from "date-fns";
@@ -10,7 +10,7 @@ type BookMarkProps = {
   onPress?: (newsId: string) => void;
 };
 
-export const BookMarkCards = ({ item, onRemove, onPress }: BookMarkProps) => {
+export const BookMarkCards = memo(({ item, onRemove, onPress }: BookMarkProps) => {
   const date = item.createdAt ? new Date(item.createdAt) : new Date();
   const isValidDate = !isNaN(date.getTime());
 
@@ -72,5 +72,11 @@ export const BookMarkCards = ({ item, onRemove, onPress }: BookMarkProps) => {
         </View>
       </View>
     </TouchableOpacity>
+}, (prevProps, nextProps) => {
+  return (
+    prevProps.item._id === nextProps.item._id &&
+    prevProps.item.content === nextProps.item.content &&
+    prevProps.item.media?.[0]?.url === nextProps.item.media?.[0]?.url
   );
-};
+});
+

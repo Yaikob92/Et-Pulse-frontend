@@ -3,7 +3,7 @@ import { NewsItem, User } from "@/types";
 import { formatDate, formatNumber } from "@/utils/formatter";
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import React, { memo, useState } from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, Image, Modal, StatusBar, Text, TouchableOpacity, View } from "react-native";
 
 type NewsCardProps = {
   item: NewsItem;
@@ -25,8 +25,11 @@ export const NewsItemCard = memo(({
   isBookmarked,
 }: NewsCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isImageModalVisible, setIsImageModalVisible] = useState(false);
   const CONTENT_LIMIT = 150;
   const { isDark } = useTheme();
+
+  const imageMedia = item.media?.find((m) => m.type === "image");
 
   const channel = typeof item.channel_id === "object" ? item.channel_id : null;
   const channelName = channel?.name || "";
@@ -40,6 +43,7 @@ export const NewsItemCard = memo(({
       : item.content;
 
   return (
+    <>
     <View className="bg-white dark:bg-[#1A1D27] border-b border-gray-400 dark:border-gray-700 pb-4 mb-3">
       {/* Header */}
       <View className="flex-row items-center justify-between px-4 pt-4 mb-3">
@@ -95,12 +99,18 @@ export const NewsItemCard = memo(({
         </View>
       )}
 
-      {/* Media */}
-      {item.media && item.media.length > 0 && (
-        <Image
-          source={{ uri: item.media[0].url }}
-          style={{ width: "100%", height: 256 }}
-        />
+      {/* Media — only show if there is an image */}
+      {imageMedia && (
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => setIsImageModalVisible(true)}
+        >
+          <Image
+            source={{ uri: imageMedia.url }}
+            style={{ width: "100%", height: 256 }}
+            resizeMode="cover"
+          />
+        </TouchableOpacity>
       )}
 
       {/* Actions */}
@@ -155,19 +165,7 @@ export const NewsItemCard = memo(({
           <Text className="text-sm text-gray-600 dark:text-gray-400 mt-1">Repost</Text>
         </TouchableOpacity>
 
-        <View className="flex-col items-center">
-          <View className="flex-row items-center">
-            <Ionicons
-              name="eye-outline"
-              size={18}
-              color={isDark ? "#9CA3AF" : "#657786"}
-            />
-            <Text className="text-gray-500 dark:text-gray-400 text-sm ml-2">
-              {formatNumber(item.engagement?.views || 0)}
-            </Text>
-          </View>
-          <Text className="text-sm text-gray-600 dark:text-gray-400 mt-1">Views</Text>
-        </View>
+
 
         <TouchableOpacity className="flex-col items-center">
           <Feather name="send" size={18} color={isDark ? "#9CA3AF" : "#657786"} />
@@ -175,5 +173,64 @@ export const NewsItemCard = memo(({
         </TouchableOpacity>
       </View>
     </View>
+
+      {/* Fullscreen Image Modal */}
+      {imageMedia && (
+        <Modal
+          visible={isImageModalVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setIsImageModalVisible(false)}
+        >
+          <StatusBar backgroundColor="#000" barStyle="light-content" />
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => setIsImageModalVisible(false)}
+            style={{
+              flex: 1,
+              backgroundColor: "rgba(0,0,0,0.95)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {/* Close button */}
+            <View
+              style={{
+                position: "absolute",
+                top: 50,
+                right: 20,
+                zIndex: 10,
+                backgroundColor: "rgba(255,255,255,0.15)",
+                borderRadius: 20,
+                padding: 8,
+              }}
+            >
+              <Ionicons name="close" size={28} color="#fff" />
+            </View>
+
+            <Image
+              source={{ uri: imageMedia.url }}
+              style={{
+                width: Dimensions.get("window").width,
+                height: Dimensions.get("window").height * 0.75,
+              }}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        </Modal>
+      )}
+    </>
+  );
+}, (prevProps, nextProps) => {
+  return (
+    prevProps.isLiked === nextProps.isLiked &&
+    prevProps.isBookmarked === nextProps.isBookmarked &&
+    prevProps.item._id === nextProps.item._id &&
+    prevProps.item.likesCount === nextProps.item.likesCount &&
+    prevProps.item.comments?.length === nextProps.item.comments?.length &&
+    prevProps.item.content === nextProps.item.content &&
+    prevProps.item.media?.[0]?.url === nextProps.item.media?.[0]?.url &&
+    !!prevProps.currentUser === !!nextProps.currentUser
   );
 });
+

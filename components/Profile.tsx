@@ -11,12 +11,12 @@ import React, { useMemo } from "react";
 import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useSignOut } from "@/hooks/useSignOut";
-import { useApiClient, userApi, bookmarkApi } from "@/utils/api";
+import { useApiClient, userApi } from "@/utils/api";
 import * as ImagePicker from "expo-image-picker";
 import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "@/context/ThemeContext";
+import { useBookmarks } from "@/hooks/useBookmarks";
 import { LinearGradient } from "expo-linear-gradient";
 
 // ─── Constants ──────────────────────────────────────────────────────────────
@@ -99,18 +99,7 @@ export default function Profile() {
   const { currentUser, refetch } = useCurrentUser();
   const { isDark, toggleTheme } = useTheme();
 
-  const { data: bookmarks = [] } = useQuery({
-    queryKey: ["bookmarks"],
-    queryFn: async () => {
-      try {
-        const res = await bookmarkApi.getBookMark(api);
-        return res.data.bookMarks ?? [];
-      } catch {
-        return [];
-      }
-    },
-    enabled: !!currentUser,
-  });
+  const { news: bookmarks = [] } = useBookmarks();
 
   const handlePickImage = async () => {
     try {
@@ -217,17 +206,15 @@ export default function Profile() {
                 icon={<Feather name="moon" size={18} color="#A78BFA" />}
                 title="Dark Mode"
                 subtitle="Easier on the eyes"
-                onPress={() => {}}
+                onPress={toggleTheme}
                 rightElement={
-                  <Switch
-                    value={isDark}
-                    onValueChange={(val) => {
-                      // Small delay to allow switch animation to finish before heavy re-render
-                      setTimeout(() => toggleTheme(), 10);
-                    }}
-                    trackColor={{ false: "#D1D5DB", true: "#3B82F6" }}
-                    thumbColor="#fff"
-                  />
+                  <View pointerEvents="none">
+                    <Switch
+                      value={isDark}
+                      trackColor={{ false: "#D1D5DB", true: "#3B82F6" }}
+                      thumbColor="#fff"
+                    />
+                  </View>
                 }
               />
               <MenuItem

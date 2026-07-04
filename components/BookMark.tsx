@@ -19,15 +19,19 @@ const BookMark = () => {
   const { news, isLoading, isError, refetch, saveBookMark } = useBookmarks();
   const router = useRouter();
 
+  const handlePress = useCallback((newsId: string) => {
+    router.push({ pathname: "/", params: { newsId } });
+  }, [router]);
+
   const renderBookMarks = useCallback<ListRenderItem<NewsItem>>(
     ({ item }) => (
       <BookMarkCards
         item={item}
         onRemove={saveBookMark}
-        onPress={() => router.push({ pathname: "/", params: { newsId: item._id } })}
+        onPress={handlePress}
       />
     ),
-    [saveBookMark, router],
+    [saveBookMark, handlePress],
   );
 
   const onRefresh = async () => {
@@ -70,6 +74,15 @@ const BookMark = () => {
         keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 80 }}
+        getItemLayout={(data, index) => ({
+          length: 144,
+          offset: 144 * index,
+          index,
+        })}
+        initialNumToRender={8}
+        maxToRenderPerBatch={10}
+        windowSize={5}
+        removeClippedSubviews={true}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}

@@ -93,19 +93,23 @@ const NewsList = ({ category, newsId, search }: NewsListProps) => {
     saveBookMark(newsId);
   }, [currentUser, saveBookMark]);
 
+  const handleComment = useCallback((item: NewsItem) => {
+    setSelectedNewsId(item._id);
+  }, []);
+
   const renderNews = useCallback<ListRenderItem<NewsItem>>(
     ({ item }) => (
       <NewsItemCard
         item={item}
         onLike={handleToggleLike}
         currentUser={currentUser}
-        onComment={() => setSelectedNewsId(item._id)}
+        onComment={handleComment}
         isBookmarked={checkIsBookmarked(item._id)}
         onBookmark={handleToggleBookmark}
         isLiked={item.isLiked}
       />
     ),
-    [handleToggleLike, currentUser, handleToggleBookmark, checkIsBookmarked],
+    [handleToggleLike, currentUser, handleComment, handleToggleBookmark, checkIsBookmarked],
   );
 
   const onRefresh = async () => {
@@ -167,9 +171,9 @@ const NewsList = ({ category, newsId, search }: NewsListProps) => {
         contentContainerStyle={{ paddingBottom: 80 }}
         
         // Performance Props
-        initialNumToRender={5}
-        maxToRenderPerBatch={5}
-        windowSize={11}
+        initialNumToRender={4}
+        maxToRenderPerBatch={4}
+        windowSize={5}
         removeClippedSubviews={true}
         updateCellsBatchingPeriod={150}
         

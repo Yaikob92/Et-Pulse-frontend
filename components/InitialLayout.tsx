@@ -1,32 +1,35 @@
 import { useAuth } from "@clerk/clerk-expo";
-import { Stack, useRouter, useSegments } from "expo-router";
+import { Stack, useSegments, Redirect } from "expo-router";
 import { useEffect } from "react";
 import * as SplashScreen from 'expo-splash-screen';
+import { useTheme } from "@/context/ThemeContext";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
 export default function InitialLayout() {
-  const { isLoaded, isSignedIn } = useAuth();
+  const { isLoaded: isAuthLoaded, isSignedIn } = useAuth();
+  const { isThemeLoaded } = useTheme();
   const segments = useSegments();
-  const router = useRouter();
+
+  const isLoaded = isAuthLoaded && isThemeLoaded;
 
   useEffect(() => {
-    if (!isLoaded) return;
-
-    const inAuthGroup = segments[0] === "(auth)";
-
-    if (!isSignedIn && !inAuthGroup) {
-      router.replace("/(auth)/login");
-    } else if (isSignedIn && inAuthGroup) {
-      router.replace("/");
+    if (isLoaded) {
+      SplashScreen.hideAsync();
     }
-
-    // Hide the splash screen once we've redirected
-    SplashScreen.hideAsync();
-  }, [isLoaded, isSignedIn, segments, router]);
+  }, [isLoaded]);
 
   if (!isLoaded) return null;
 
+  const inAuthGroup = segments[0] === "(auth)";
+
+  if (!isSignedIn && !inAuthGroup) {
+    return <Redirect href="/(auth)/login" />;
+  } else if (isSignedIn && inAuthGroup) {
+    return <Redirect href="/" />;
+  }
+
   return <Stack screenOptions={{ headerShown: false }} />;
 }
+

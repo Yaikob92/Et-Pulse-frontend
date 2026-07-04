@@ -14,8 +14,8 @@ export interface Channel {
   profile_pic?: string;
   description?: string;
   subscribers_count: number;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface NewsItem {
@@ -44,7 +44,7 @@ export interface NewsItem {
     url: string;
   }[];
   source?: {
-    platform: string;
+    name: string;
     url?: string;
   };
 

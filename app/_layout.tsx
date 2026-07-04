@@ -13,6 +13,8 @@ import "../global.css";
 
 const queryclient = new QueryClient();
 
+import { ThemeProvider as NavigationThemeProvider, DarkTheme, DefaultTheme } from "@react-navigation/native";
+
 /**
  * Inner shell that reads the theme context and applies the
  * NativeWind colorScheme so all `dark:` classes take effect.
@@ -21,15 +23,17 @@ function ThemedApp() {
   const { isDark } = useTheme();
 
   return (
-    <View className="flex-1 bg-white dark:bg-[#0F1117]">
-      <ExpoStatusBar style={isDark ? "light" : "dark"} />
-      <SafeAreaView
-        style={{ flex: 1 }}
-        edges={["top", "bottom"]}
-      >
-        <InitialLayout />
-      </SafeAreaView>
-    </View>
+    <NavigationThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+      <View className="flex-1 bg-white dark:bg-[#0F1117]">
+        <ExpoStatusBar style={isDark ? "light" : "dark"} />
+        <SafeAreaView
+          style={{ flex: 1 }}
+          edges={["top", "bottom"]}
+        >
+          <InitialLayout />
+        </SafeAreaView>
+      </View>
+    </NavigationThemeProvider>
   );
 }
 

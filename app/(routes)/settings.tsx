@@ -100,21 +100,23 @@ const SettingsRow = ({ item, isLast, toggleState, onToggle, isDarkMode, onDarkMo
             {/* Right control */}
             {item.kind === "toggle" ? (
                 isDarkModeRow ? (
-                    <Switch
-                        value={isDarkMode}
-                        onValueChange={onDarkModeToggle}
-                        trackColor={{ false: "#E5E7EB", true: item.activeColor }}
-                        thumbColor="#fff"
-                        ios_backgroundColor="#E5E7EB"
-                    />
+                    <View pointerEvents="none">
+                        <Switch
+                            value={isDarkMode}
+                            trackColor={{ false: "#E5E7EB", true: item.activeColor }}
+                            thumbColor="#fff"
+                            ios_backgroundColor="#E5E7EB"
+                        />
+                    </View>
                 ) : (
-                    <Switch
-                        value={toggleState[item.stateKey]}
-                        onValueChange={() => onToggle(item.stateKey)}
-                        trackColor={{ false: "#E5E7EB", true: item.activeColor }}
-                        thumbColor="#fff"
-                        ios_backgroundColor="#E5E7EB"
-                    />
+                    <View pointerEvents="none">
+                        <Switch
+                            value={toggleState[item.stateKey]}
+                            trackColor={{ false: "#E5E7EB", true: item.activeColor }}
+                            thumbColor="#fff"
+                            ios_backgroundColor="#E5E7EB"
+                        />
+                    </View>
                 )
             ) : (
                 <TouchableOpacity onPress={item.onPress} className="flex-row items-center" activeOpacity={0.7}>
@@ -349,15 +351,26 @@ export default function Settings() {
                         <View className="bg-white dark:bg-[#1A1D27] rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden">
                             {section.items.map((item, iIdx) => (
                                 item.kind === "toggle" ? (
-                                    <SettingsRow
+                                    <TouchableOpacity
                                         key={item.id}
-                                        item={item}
-                                        isLast={iIdx === section.items.length - 1}
-                                        toggleState={toggles}
-                                        onToggle={handleToggle}
-                                        isDarkMode={isDark}
-                                        onDarkModeToggle={toggleTheme}
-                                    />
+                                        onPress={() => {
+                                            if (item.id === "darkMode") {
+                                                toggleTheme();
+                                            } else {
+                                                handleToggle(item.stateKey);
+                                            }
+                                        }}
+                                        activeOpacity={0.7}
+                                    >
+                                        <SettingsRow
+                                            item={item}
+                                            isLast={iIdx === section.items.length - 1}
+                                            toggleState={toggles}
+                                            onToggle={handleToggle}
+                                            isDarkMode={isDark}
+                                            onDarkModeToggle={toggleTheme}
+                                        />
+                                    </TouchableOpacity>
                                 ) : (
                                     <TouchableOpacity
                                         key={item.id}
